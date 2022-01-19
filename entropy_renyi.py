@@ -17,39 +17,27 @@ import copy
 #from Bio import Seq
 #from Bio import SeqRecord
 
-def discrete_renyi(n, alpha=2):
+def renyi4d(cgr, sig2v, refseq=None, filesave=False):
     """
-    Given a frequency vector, this function calculates the discrete renyi entropy as 1/(1-alpha)*log2(sum(p**alpha))
+    renyi4d matches exact formula of the renyi entropy algorithm of a 4d usm used by Vinga & Almeida 2004.
 
     Parameters
     ----------
-    n : LIST LIKE OBJECT OF L-TUPLE FREQUENCY COUNTS
-    alpha : PARAMETER FOR THE RENYI OPERATION, DEFINES RENYI ORDER
+    cgr : LIST or ARRAY-LIKE OBJECT
+        ARRAY LIKE CONTAINING USM FORWARD COORDINATES AS ROWS.
+    sig2v : TYPE
+        DESCRIPTION.
+    refseq : TYPE, optional
+        DESCRIPTION. The default is None.
+    filesave : TYPE, optional
+        DESCRIPTION. The default is False.
 
     Returns
     -------
-    r, rmax, rmin : r is the discrete renyi(alpha) entropy of the sequence; 
-            rmax and rmin are the max possible entropy for alphabet len(n) and the minimum entropy as alpha approaches infinity
+    r2usm_dict : TYPE
+        DESCRIPTION.
 
     """
-   
-    p = np.array(n)/np.array(n).sum()
-    
-    #define special case for Shannon's entropy alpha=1
-    if alpha==1:
-        p = np.where(p==0, 1, p)
-        r = -sum(p*np.log2(p))
-        print("Shannon's entropy is:", r)
-        
-    else:
-        r= 1/(1-alpha)*np.log2(np.sum(p**alpha))
-    rmax = np.log2(len(n)) #the case of the uniform distribution or if alpha=0
-    rmin = -np.log2(np.max(p)) #the case as alpha -> infinity
-    
-    return r, rmax, rmin
-
-#renyi4d matches exact formula of the renyi entropy algorithm of a 4d usm used by Vinga & Almeida 2004.
-def renyi4d(cgr, sig2v, refseq=None, filesave=False):
     #convert cgr is ndarray
     cgr = np.asarray(cgr)
     #n is sequence length and d is the size of the alphabet or dimension of the USM
@@ -67,7 +55,7 @@ def renyi4d(cgr, sig2v, refseq=None, filesave=False):
     ln_sig2 = np.log(sig2_list)
     if refseq==None:
         seqname = "cgr_{}".format(datetime.datetime.now().isoformat())
-    elif refseq: 
+    elif refseq:
         seqname = refseq
     plt.plot(ln_sig2, r2usm_list, 'bo')
     plt.title("Renyi Quadratic Entropy for {} N={} D={}".format(seqname, n, d))
@@ -77,9 +65,9 @@ def renyi4d(cgr, sig2v, refseq=None, filesave=False):
     if filesave==True:
         fname = 'renyi2_{}'.format(seqname)
         plt.savefig(fname, format='png')
-        
+
     return r2usm_dict
-    
+
 def renyi2usm(cgr_coords, sig2v, refseq=None, filesave=False):
     """
     Calculates Renyi quadratic entropy of a set of USM forward coordinates
@@ -117,7 +105,7 @@ def renyi2usm(cgr_coords, sig2v, refseq=None, filesave=False):
     ln_sig2 = np.log(sig2_list)
     if refseq==None:
         seqname = "cgr_{}".format(datetime.datetime.now().isoformat())
-    elif refseq: 
+    elif refseq:
         seqname = refseq
     plt.plot(ln_sig2, r2usm_list, 'bo')
     plt.title("Renyi Quadratic Entropy for {} N={} D={}".format(seqname, n, d))
@@ -127,9 +115,9 @@ def renyi2usm(cgr_coords, sig2v, refseq=None, filesave=False):
     if filesave==True:
         fname = 'renyi2_{}'.format(seqname)
         plt.savefig(fname, format='png')
-        
+
     return r2usm_dict
-    
+
 if __name__ == "__main__":
     """
     char_val = ["a","b","c","d","e","f","g","h","i"]
@@ -158,4 +146,4 @@ if __name__ == "__main__":
         #print("renyi4d")
         #print("----------------------------------------------------------")
         #print(renyi4d(cgr, sig2v, refseq=fname))
-    
+
