@@ -13,6 +13,8 @@ class CGR():
     """
     Creates a container for CGR coordinates with attributes related to the alphabet of the sequence,
     coordinates of alphabet, specifying forward or backward generated coordinates and form of CGR (either USM or 2D, default is USM).
+
+    Class
     """
     __slots__= ['fw', 'bw', 'coord_dict', 'form']
     def __init__(self, forward, backward=None, coord_dict=None, form='USM'):
@@ -20,22 +22,22 @@ class CGR():
         self.bw=backward
         self.coord_dict = coord_dict
         self.form=form
-        
+
     def coord_dictMake(self, alphabet, vertices):
         #creates the coord_dict from the list of alphabet and vertices in correct order
         self.coord_dict=dict(zip(alphabet, vertices))
 
 def usm_make(sequence, A=None, seed='centroid'):
     """
-    Calculates USM coordinates of a categorical sequence of arbitrary alphabet size.
+    Calculates USM coordinates of a discrete-valued sequence of arbitrary alphabet size.
 
     Parameters
     ----------
     sequence : LIST OR ARRAY TYPE;
         CATEGORICAL SEQUENCE OF DATA
-    d : LIST, optional;
-        LIST CONTAINING ALL POSSIBLE SYMBOLS OF THE ALPHABET OF THE SEQUENCE. The default is None. 
-        If default, will take alphabet as set of unique characters in seq. 
+    A : LIST, optional;
+        LIST CONTAINING ALL POSSIBLE SYMBOLS OF THE ALPHABET OF THE SEQUENCE. The default is None.
+        If default, will take alphabet as set of unique characters in seq.
     seed : STRING, default 'rand';
         INDICATES THE PROCEDURE FOR SEEDING THE USM IFS
 
@@ -47,10 +49,10 @@ def usm_make(sequence, A=None, seed='centroid'):
     seq=copy.deepcopy(sequence)
     N=len(seq)
     #determine number of unique symbols in seq
+    #uu is an ndarray of the unique values in seq, sorted.
+    #J is an ndarray size = len(seq) containing the index values of uu that could recreate seq
     uu, J = np.unique(seq, return_inverse=True)
-    
-    
-    
+
     #determine the dimension, d, of the unit hypercube whose edges correspond to each uu
     if A:
         A.sort()
@@ -126,21 +128,27 @@ def cgr2d(seq, A=None):
     ----------
     seq : LIST-LIKE OBJECT
         CONTAINS THE SEQUENCE TO BE GRAPHED.
-    A : LIST CONTAINING ALL POSSIBLE SYMBOLS OF THE ALPHABET OF THE SEQUENCE. The default is None. 
+    A : LIST CONTAINING ALL POSSIBLE SYMBOLS OF THE ALPHABET OF THE SEQUENCE. The default is None.
         If default, will take alphabet as set of unique characters in seq.
 
     Returns
     -------
     CGR object containing the coordinate array and alphabet-dict.
 
+    References
+    ----------
+    Almeida, J. S., &#38; Vinga, S. (2009). Biological sequences as pictures: A generic two dimensional solution for iterated maps.
+        BMC Bioinformatics, 10(100), 1–7. https://doi.org/10.1186/1471-2105-10-100
+
     """
     N=len(seq)
-    #determine number of unique symbols in seq and inverse sequence of uu indices that recreate seq
+    #uu is the set of unique symbols in seq and J inverse sequence of uu indices that recreate seq
     uu, J = np.unique(seq, return_inverse=True)
-    
+
     if A:
         A.sort()
         print("A", A)
+        #d is dimension of alphabet
         d=len(A)
         assert d >= len(uu), "Unique sequence units greater than alphabet. List of unique sequence units: {}".format(uu)
         ix = []
@@ -182,10 +190,10 @@ def cgr2d(seq, A=None):
     vert_coords=list(map(tuple, verts))
     cgr2d.coord_dictMake(A, vert_coords)
     return cgr2d
-        
+
 def usm_density(c, L):
     """
-    Calculates the renyi quadratic entropy of USM map coordinates
+    Calculates the subquadrant density of USM map coordinates
 
     Parameters
     ----------
@@ -198,9 +206,10 @@ def usm_density(c, L):
     vector of L-tuple counts
 
     """
-    
-    d=2**L   #d is the number of bijective contractions for tuples length L
-    nbin = d**2  #total number of subquadrants used for density calculation
+    #d is the number of bijective contractions for tuples length L
+    d=2**L
+    #total number of subquadrants used for density calculation
+    nbin = d**2
     t=np.floor(d*c[L-1:])
     print(t)
     B, J = np.unique(t, axis=0, return_inverse=True)
@@ -211,7 +220,7 @@ def usm_density(c, L):
 if __name__ == "__main__":
     import pandas as pd
     #import matplotlib.pyplot as plt
-    
+
     data=np.random.randint(8, size=10000)
     coords=cgr2d(data)
     octogon = pd.DataFrame(np.asarray(coords.fw), columns=['x', 'y'])
