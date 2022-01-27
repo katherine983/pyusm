@@ -7,7 +7,6 @@ Created on Thu May 14 13:14:53 2020
 
 
 import numpy as np
-from usm_make import usm_make
 from scipy.spatial.distance import pdist
 import matplotlib.pyplot as plt
 import datetime
@@ -68,7 +67,7 @@ def renyi4d(cgr, sig2v, refseq=None, filesave=False):
 
     return r2usm_dict
 
-def renyi2usm(cgr_coords, sig2v, refseq=None, filesave=False, deep_copy=True):
+def renyi2usm(cgr_coords, sig2v, refseq=None, Plot=True, filesave=False, deep_copy=True):
     """
     Calculates Renyi quadratic entropy of a set of USM forward coordinates
 
@@ -78,9 +77,13 @@ def renyi2usm(cgr_coords, sig2v, refseq=None, filesave=False, deep_copy=True):
     sig2v : VECTOR WITH VARIANCES, SIG2, TO USE WITH PARZEN METHOD
     refseq : STRING, optional
         NAME OF SEQUENCE. The default is None.
+    Plot : BOOLEAN, optional
+        OPTION TO PLOT ENTROPY VALUES AS A FUNCTION OF THE LOG OF THE KERNEL
+        VARIANCES, SIG2V. ENTROPY VALUES ON THE Y AXIS AND LN(SIG2) VALUES
+        ON THE X AXIS.
     filesave : BOOLEAN, optional
         OPTION TO SAVE RESULTS TO FILE. The default is False.
-    deep_copy : BOOL
+    deep_copy : BOOLEAN, optional
         IF TRUE (DEFAULT) WILL USE A DEEP COPY OF cgr_coords TO CALCULATE THE
         ENTROPY VALUES.
 
@@ -103,25 +106,25 @@ def renyi2usm(cgr_coords, sig2v, refseq=None, filesave=False, deep_copy=True):
     for i in range(len(sig2v)):
         sig2 = sig2v[i]
         sig = np.sqrt(sig2)
-        G = 2*np.sum(np.exp((-1/(4*sig2))*dij))+n
-        V = (1/((n**2)*((2*sig*(np.sqrt(np.pi)))**d)))*G
+        G = 2 * np.sum(np.exp((-1/(4 * sig2)) * dij))+n
+        V = (1/((n ** 2) * ((2 * sig * (np.sqrt(np.pi))) ** d))) * G
         r2usm = np.negative(np.log(V))
         r2usm_dict[sig2] = r2usm
-    sig2_list, r2usm_list = zip(*r2usm_dict.items())
-    ln_sig2 = np.log(sig2_list)
     if refseq==None:
         seqname = "cgr_{}".format(datetime.datetime.now().isoformat())
     elif refseq:
         seqname = refseq
-    plt.plot(ln_sig2, r2usm_list, 'bo')
-    plt.title("Renyi Quadratic Entropy for {} N={} D={}".format(seqname, n, d))
-    plt.xlabel('sig2')
-    plt.ylabel('Renyi2 Entropy')
-    plt.show()
-    if filesave==True:
-        fname = 'renyi2_{}'.format(seqname)
-        plt.savefig(fname, format='png')
-
+    if Plot is True:
+        sig2_list, r2usm_list = zip(*r2usm_dict.items())
+        ln_sig2 = np.log(sig2_list)
+        plt.plot(ln_sig2, r2usm_list, 'bo')
+        plt.title("Renyi Quadratic Entropy for {} N={} D={}".format(seqname, n, d))
+        plt.xlabel('sig2')
+        plt.ylabel('Renyi2 Entropy')
+        plt.show()
+        if filesave==True:
+            fname = 'renyi2_{}'.format(seqname)
+            plt.savefig(fname, format='png')
     return r2usm_dict
 
 if __name__ == "__main__":
@@ -131,7 +134,8 @@ if __name__ == "__main__":
     data_string = ""
     data_string = data_string.join(data)
     """
-    data_folder = pathlib.Path(r"C:\\Users\\wuest\\Google Drive\\Dissertation Writings\\Code\\renyi1v1\\seq")
+    from usm_make import usm_make
+    data_folder = pathlib.Path(r"C:\Users\Wuestney\Documents\Python Scripts\code_demonstrations\demosim\seq")
     fname = "Es.seq"
     file_to_open = data_folder/fname
     with open(file_to_open, 'r') as fhand:
@@ -142,13 +146,13 @@ if __name__ == "__main__":
         #print(data)
         cgr = usm_make(data, A=['A','C','G','T'])
         #print("cgr", cgr)
-        cgr = np.asarray(cgr)
+        #cgr = np.asarray(cgr)
         #np.savetxt("cgr_MC0-py-2.csv", cgr, delimiter=",")
         sig2v = np.genfromtxt('sig2.csv', delimiter=',')
         symbols, freqs = np.unique(data, return_counts=True)
         print("renyi2usm")
         print("----------------------------------------------------------")
-        print(renyi2usm(cgr, sig2v, refseq=fname))
+        print(renyi2usm(cgr.fw, sig2v, refseq=fname))
         #print("renyi4d")
         #print("----------------------------------------------------------")
         #print(renyi4d(cgr, sig2v, refseq=fname))

@@ -62,17 +62,17 @@ def usm_make(sequence, A=None, seed='centroid', deep_copy=True):
     #determine the dimension, d, of the unit hypercube whose edges correspond to each uu
     if A:
         A.sort()
-        print("A", A)
+        #print("A", A)
         d=len(A)
         assert d >= len(uu), "Unique sequence units greater than alphabet. List of unique sequence units: {}".format(uu)
         #to ensure consistency in coordinate locations for sequences with the same generating alphabet but are missing 1 or more alphabet symbols.
         ix = []
         for i in range(len(uu)):
             assert uu[i] in A, "Unrecognized symbol in sequence. List of unique sequence units: {}".format(uu)
-            print("uu[i]", uu[i])
+            #print("uu[i]", uu[i])
             #get the index in A of each symbol in uu
             y = A.index(uu[i])
-            print("Index of uu[i] in A", y)
+            #print("Index of uu[i] in A", y)
             ix.append(y)
         #create sparse identity matrix in d dimensions
         Y=np.identity(d)
@@ -86,7 +86,7 @@ def usm_make(sequence, A=None, seed='centroid', deep_copy=True):
         Y=np.identity(d)
     X=Y[J]
     X_rev = copy.deepcopy(np.flip(X, 0))
-    print("X", X)
+    #print("X", X)
     if seed=='centroid':
         f=[np.repeat(0.5, d)]
         b=[np.repeat(0.5, d)]
@@ -153,16 +153,16 @@ def cgr2d(seq, A=None):
 
     if A:
         A.sort()
-        print("A", A)
+        #print("A", A)
         #d is dimension of alphabet
         d=len(A)
         assert d >= len(uu), "Unique sequence units greater than alphabet. List of unique sequence units: {}".format(uu)
         ix = []
         for i in range(len(uu)):
             assert uu[i] in A, "Unrecognized symbol in sequence. List of unique sequence units: {}".format(uu)
-            print("uu[i]", uu[i])
+            #print("uu[i]", uu[i])
             y = A.index(uu[i])
-            print("Index of uu[{}] in A".format(i), y)
+            #print("Index of uu[{}] in A".format(i), y)
             ix.append(y)
         radians=[]
         for k in range(d):
