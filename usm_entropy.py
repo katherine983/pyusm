@@ -68,7 +68,7 @@ def renyi4d(cgr, sig2v, refseq=None, filesave=False):
 
     return r2usm_dict
 
-def renyi2usm(cgr_coords, sig2v, refseq=None, filesave=False):
+def renyi2usm(cgr_coords, sig2v, refseq=None, filesave=False, deep_copy=True):
     """
     Calculates Renyi quadratic entropy of a set of USM forward coordinates
 
@@ -80,15 +80,21 @@ def renyi2usm(cgr_coords, sig2v, refseq=None, filesave=False):
         NAME OF SEQUENCE. The default is None.
     filesave : BOOLEAN, optional
         OPTION TO SAVE RESULTS TO FILE. The default is False.
+    deep_copy : BOOL
+        IF TRUE (DEFAULT) WILL USE A DEEP COPY OF cgr_coords TO CALCULATE THE
+        ENTROPY VALUES.
 
     Returns
     -------
     Dictionary containing renyi quadratic entropy of the USM for each sig2 value.
 
     """
-    #convert cgr is ndarray
-    cgr=copy.deepcopy(cgr_coords)
-    cgr = np.asarray(cgr)
+    if deep_copy is True:
+        #convert cgr is ndarray
+        cgr=copy.deepcopy(cgr_coords)
+        cgr = np.asarray(cgr)
+    else:
+        cgr = np.asarray(cgr_coords)
     #n is sequence length and d is the size of the alphabet or dimension of the USM
     n, d = cgr.shape
     #get d(i,j) the pairwise squared euclidean distance between all sample USM points ai and aj.

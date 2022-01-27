@@ -27,7 +27,7 @@ class CGR():
         #creates the coord_dict from the list of alphabet and vertices in correct order
         self.coord_dict=dict(zip(alphabet, vertices))
 
-def usm_make(sequence, A=None, seed='centroid'):
+def usm_make(sequence, A=None, seed='centroid', deep_copy=True):
     """
     Calculates USM coordinates of a discrete-valued sequence of arbitrary alphabet size.
 
@@ -40,13 +40,19 @@ def usm_make(sequence, A=None, seed='centroid'):
         If default, will take alphabet as set of unique characters in seq.
     seed : STRING, default 'rand';
         INDICATES THE PROCEDURE FOR SEEDING THE USM IFS
+    deep_copy : BOOL
+        IF TRUE (DEFAULT) WILL USE A DEEP COPY OF THE SEQUENCE TO MAKE THE USM.
 
     Returns
     -------
-    List of ndarrays containing the forward SM coordinates for each symbol in seq
+    An instance of a CGR object. CGR.fw is a list of ndarrays containing the
+    forward SM coordinates for each symbol in seq
 
     """
-    seq=copy.deepcopy(sequence)
+    if deep_copy is True:
+        seq=copy.deepcopy(sequence)
+    else:
+        seq = sequence
     N=len(seq)
     #determine number of unique symbols in seq
     #uu is an ndarray of the unique values in seq, sorted.
