@@ -164,6 +164,7 @@ def cgr2d(seq, A=None):
             y = A.index(uu[i])
             #print("Index of uu[{}] in A".format(i), y)
             ix.append(y)
+        #get coordinates for vertices of an equilateral d-gon
         radians=[]
         for k in range(d):
             rad = (2*np.pi*k)/d
@@ -176,6 +177,7 @@ def cgr2d(seq, A=None):
         #get number of unique symbols in seq
         d=len(uu)
         A=uu
+        #get coordinates for vertices of an equilateral d-gon
         radians=[]
         for k in range(d):
             rad = (2*np.pi*k)/d
