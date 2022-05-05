@@ -125,17 +125,35 @@ def usm_make(sequence, A=None, seed='centroid', deep_copy=True):
     USM.coord_dictMake(A,vert_coords)
     return USM
 
-def cgr2d(seq, A=None):
+def ngon_coords(verts):
+    radians=[]
+    for k in range(verts):
+        rad = (2*np.pi*k)/verts
+        radians.append(rad)
+    x_vals = np.cos(radians)
+    y_vals =np.sin(radians)
+    return x_vals, y_vals
+
+def cgr2d(seq, A=None, vert_dict=False):
     """
-    Calculates 2D CGR coordinates according to the method for estimating a bijective contraction ratio proposed by Almeida & Vinga (2009).
-    First estimates the contraction ratio to use based on the size of the alphabet of the input sequence.
+    Calculates 2D CGR coordinates according to the method for estimating a
+    bijective contraction ratio proposed by Almeida & Vinga (2009).
+    First estimates the contraction ratio to use based on the size of the
+    alphabet of the input sequence.
 
     Parameters
     ----------
     seq : LIST-LIKE OBJECT
         CONTAINS THE SEQUENCE TO BE GRAPHED.
-    A : LIST CONTAINING ALL POSSIBLE SYMBOLS OF THE ALPHABET OF THE SEQUENCE. The default is None.
-        If default, will take alphabet as set of unique characters in seq.
+    A : LIST OR DICT
+        IF LIST, SHOULD CONTAIN ALL POSSIBLE SYMBOLS OF THE ALPHABET OF THE
+        SEQUENCE. FUNCTION WILL THEN CALCULATE VERTEX COORDINATES AUTOMATICALLY.
+        IF DICT, SHOULD HAVE ONE ENTRY FOR EACH POSSIBLE SYMBOL OF
+        THE ALPHABET OF THE SEQUENCE WHERE THE ENTRY KEY IS THE SYMBOL AND THE
+        ENTRY VALUE IS THE COORDINATE TO BE ASSOCIATED WITH THAT SYMBOL.
+        The default is None.
+        If default, will take alphabet as set of unique characters in seq and
+        calculate vertex coordinates automatically.
 
     Returns
     -------
@@ -152,38 +170,59 @@ def cgr2d(seq, A=None):
     uu, J = np.unique(seq, return_inverse=True)
 
     if A:
-        A.sort()
-        #print("A", A)
-        #d is dimension of alphabet
-        d=len(A)
-        assert d >= len(uu), "Unique sequence units greater than alphabet. List of unique sequence units: {}".format(uu)
-        ix = []
-        for i in range(len(uu)):
-            assert uu[i] in A, "Unrecognized symbol in sequence. List of unique sequence units: {}".format(uu)
-            #print("uu[i]", uu[i])
-            y = A.index(uu[i])
-            #print("Index of uu[{}] in A".format(i), y)
-            ix.append(y)
-        #get coordinates for vertices of an equilateral d-gon
-        radians=[]
-        for k in range(d):
-            rad = (2*np.pi*k)/d
-            radians.append(rad)
-        x_vals= np.cos(radians)
-        y_vals=np.sin(radians)
-        Y= np.column_stack((x_vals, y_vals))
-        Y=Y[ix]
+        if isinstance(A, list):
+            A.sort()
+            #print("A", A)
+            #d is dimension of alphabet
+            d=len(A)
+            assert d >= len(uu), "Unique sequence units greater than alphabet. List of unique sequence units: {}".format(uu)
+            ix = []
+            for i in range(len(uu)):
+                assert uu[i] in A, "Unrecognized symbol in sequence. List of unique sequence units: {}".format(uu)
+                #print("uu[i]", uu[i])
+                y = A.index(uu[i])
+                #print("Index of uu[{}] in A".format(i), y)
+                ix.append(y)
+            #get coordinates for vertices of an equilateral d-gon
+            """
+            radians=[]
+            for k in range(d):
+                rad = (2*np.pi*k)/d
+                radians.append(rad)
+            x_vals= np.cos(radians)
+            y_vals=np.sin(radians)
+            """
+            x_vals, y_vals = ngon_coords(d)
+            Y= np.column_stack((x_vals, y_vals))
+            Y=Y[ix]
+        elif isinstance(A, dict):
+            a, vrts = zip(*A.items())
+            d = len(a)
+            assert d >= len(uu), "Unique sequence units greater than alphabet. List of unique sequence units: {}".format(uu)
+            ix = []
+            for i in range(len(uu)):
+                assert uu[i] in a, "Unrecognized symbol in sequence. List of unique sequence units: {}".format(uu)
+                #print("uu[i]", uu[i])
+                y = a.index(uu[i])
+                #print("Index of uu[{}] in A".format(i), y)
+                ix.append(y)
+            x_vals, y_vals = zip(*vrts)
+            Y= np.column_stack((x_vals, y_vals))
+            Y=Y[ix]
     else:
         #get number of unique symbols in seq
         d=len(uu)
         A=uu
         #get coordinates for vertices of an equilateral d-gon
+        """
         radians=[]
         for k in range(d):
             rad = (2*np.pi*k)/d
             radians.append(rad)
         x_vals= np.cos(radians)
         y_vals=np.sin(radians)
+        """
+        x_vals, y_vals = ngon_coords(d)
         Y= np.column_stack((x_vals, y_vals))
     X=Y[J]
     k=np.rint(((d+2)/4))
