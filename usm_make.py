@@ -6,7 +6,6 @@ Created on Sun May 17 17:38:17 2020
 """
 
 import numpy as np
-from timeit import Timer
 import copy
 
 class CGR():
@@ -266,6 +265,7 @@ def usm_density(c, L):
 
 if __name__ == "__main__":
     import pandas as pd
+    from timeit import Timer
     #import matplotlib.pyplot as plt
 
     data=np.random.randint(8, size=10000)
