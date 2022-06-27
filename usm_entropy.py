@@ -74,7 +74,8 @@ def renyi2usm(cgr_coords, sig2v, refseq=None, Plot=True, filesave=False, deep_co
     Parameters
     ----------
     cgr : ARRAY LIKE CONTAINING USM FORWARD COORDINATES AS ROWS
-    sig2v : VECTOR WITH VARIANCES, SIG2, TO USE WITH PARZEN METHOD
+    sig2v : VECTOR WITH VARIANCES, SIG2, TO USE WITH GAUSSIAN KERNEL IN
+            PARZEN WINDOW METHOD
     refseq : STRING, optional
         NAME OF SEQUENCE. The default is None.
     Plot : BOOLEAN, optional
