@@ -3,6 +3,8 @@
 Created on Thu May 14 13:14:53 2020
 
 @author: wuest
+
+packages: scipy1.8.1, matplotlib
 """
 
 
