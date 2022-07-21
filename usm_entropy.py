@@ -13,11 +13,17 @@ from scipy.spatial.distance import pdist
 import matplotlib.pyplot as plt
 import datetime
 import pathlib
-from Bio import SeqIO
 import copy
 #from Bio import Seq
 #from Bio import SeqRecord
 
+sig2v_default = (1e-10,1.7783e-10,3.1623e-10,5.6234e-10,1e-09,1.7783e-09,
+                  3.1623e-09,5.6234e-09,1e-08,1.7783e-08,3.1623e-08,5.6234e-08,
+                  1e-07,1.7783e-07,3.1623e-07,5.6234e-07,1e-06,1.7783e-06,
+                  3.1623e-06,5.6234e-06,1e-05,1.7783e-05,3.1623e-05,5.6234e-05,
+                  0.0001,0.00017783,0.00031623,0.00056234,0.001,0.0017783,
+                  0.0031623,0.0056234,0.01,0.017783,0.031623,0.056234,0.1,0.17783,
+                  0.31623,0.56234,1,1.7783,3.1623,5.6234,10,17.783,31.623,56.234,100)
 def renyi4d(cgr, sig2v, refseq=None, filesave=False):
     """
     renyi4d matches exact formula of the renyi entropy algorithm of a 4d usm used by Vinga & Almeida 2004.
@@ -69,14 +75,14 @@ def renyi4d(cgr, sig2v, refseq=None, filesave=False):
 
     return r2usm_dict
 
-def renyi2usm(cgr_coords, sig2v, refseq=None, Plot=True, filesave=False, deep_copy=True):
+def renyi2usm(cgr_coords, sig2v=sig2v_default, refseq=None, Plot=True, filesave=False, deep_copy=True):
     """
     Calculates Renyi quadratic entropy of a set of USM forward coordinates
 
     Parameters
     ----------
     cgr : ARRAY LIKE CONTAINING USM FORWARD COORDINATES AS ROWS
-    sig2v : VECTOR WITH VARIANCES, SIG2, TO USE WITH GAUSSIAN KERNEL IN
+    sig2v : ARRAY LIKE CONTAINING VARIANCES, SIG2, TO USE WITH GAUSSIAN KERNEL IN
             PARZEN WINDOW METHOD
     refseq : STRING, optional
         NAME OF SEQUENCE. The default is None.
@@ -95,6 +101,7 @@ def renyi2usm(cgr_coords, sig2v, refseq=None, Plot=True, filesave=False, deep_co
     Dictionary containing renyi quadratic entropy of the USM for each sig2 value.
 
     """
+    sig2v = np.array(sig2v)
     if deep_copy is True:
         #convert cgr is ndarray
         cgr=copy.deepcopy(cgr_coords)
@@ -108,9 +115,8 @@ def renyi2usm(cgr_coords, sig2v, refseq=None, Plot=True, filesave=False, deep_co
     r2usm_dict = {}
     for i in range(len(sig2v)):
         sig2 = sig2v[i]
-        sig = np.sqrt(sig2)
         G = 2 * np.sum(np.exp((-1/(4 * sig2)) * dij))+n
-        V = (1/((n ** 2) * ((2 * sig * (np.sqrt(np.pi))) ** d))) * G
+        V = (1/((n ** 2) * ((2 * np.sqrt(sig2) * (np.sqrt(np.pi))) ** d))) * G
         r2usm = np.negative(np.log(V))
         r2usm_dict[sig2] = r2usm
     if refseq==None:
@@ -131,19 +137,21 @@ def renyi2usm(cgr_coords, sig2v, refseq=None, Plot=True, filesave=False, deep_co
     return r2usm_dict
 
 if __name__ == "__main__":
+    #from Bio import SeqIO
+    from usm_make import usm_make
     """
     char_val = ["a","b","c","d","e","f","g","h","i"]
     data = random.choices(char_val, k=35000)
     data_string = ""
     data_string = data_string.join(data)
     """
-    from usm_make import usm_make
-    data_folder = pathlib.Path(r"C:\Users\Wuestney\Documents\Python Scripts\code_demonstrations\demosim\seq")
-    fname = "Es.seq"
-    file_to_open = data_folder/fname
+    cwd = pathlib.Path.cwd()
+    demo_dir = cwd / "demo_files"
+    fname = "Es.txt"
+    file_to_open = demo_dir / "seq" / fname
     with open(file_to_open, 'r') as fhand:
-        seq = SeqIO.read(fhand, "fasta")
-        data_string = str(seq.seq)
+        seq = fhand.read()
+        data_string = str(seq)
         #print(data_string, type(data_string))
         data= list(data_string)
         #print(data)
@@ -151,7 +159,14 @@ if __name__ == "__main__":
         #print("cgr", cgr)
         #cgr = np.asarray(cgr)
         #np.savetxt("cgr_MC0-py-2.csv", cgr, delimiter=",")
-        sig2v = np.genfromtxt('sig2.csv', delimiter=',')
+        #sig2va = np.genfromtxt(demo_dir.joinpath('sig2.csv'), delimiter=',')
+        np.set_printoptions(suppress=False)
+        print(sig2v)
+
+        print(sig2v == sig2va)
+        print(sig2v.dtype)
+        print(float(sig2v[0]))
+#%%
         symbols, freqs = np.unique(data, return_counts=True)
         print("renyi2usm")
         print("----------------------------------------------------------")
