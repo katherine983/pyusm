@@ -17,6 +17,7 @@ import copy
 #from Bio import Seq
 #from Bio import SeqRecord
 
+# set the default variance vector to use with Gaussian density kernels
 sig2v_default = (1e-10,1.7783e-10,3.1623e-10,5.6234e-10,1e-09,1.7783e-09,
                   3.1623e-09,5.6234e-09,1e-08,1.7783e-08,3.1623e-08,5.6234e-08,
                   1e-07,1.7783e-07,3.1623e-07,5.6234e-07,1e-06,1.7783e-06,
@@ -24,7 +25,7 @@ sig2v_default = (1e-10,1.7783e-10,3.1623e-10,5.6234e-10,1e-09,1.7783e-09,
                   0.0001,0.00017783,0.00031623,0.00056234,0.001,0.0017783,
                   0.0031623,0.0056234,0.01,0.017783,0.031623,0.056234,0.1,0.17783,
                   0.31623,0.56234,1,1.7783,3.1623,5.6234,10,17.783,31.623,56.234,100)
-def renyi4d(cgr, sig2v, refseq=None, filesave=False):
+def renyi4d(cgr, sig2v=sig2v_default, refseq=None, filesave=False):
     """
     renyi4d matches exact formula of the renyi entropy algorithm of a 4d usm used by Vinga & Almeida 2004.
 
@@ -32,17 +33,19 @@ def renyi4d(cgr, sig2v, refseq=None, filesave=False):
     ----------
     cgr : LIST or ARRAY-LIKE OBJECT
         ARRAY LIKE CONTAINING USM FORWARD COORDINATES AS ROWS.
-    sig2v : TYPE
-        DESCRIPTION.
-    refseq : TYPE, optional
-        DESCRIPTION. The default is None.
-    filesave : TYPE, optional
-        DESCRIPTION. The default is False.
+    sig2v : TUPLE OR ARRAY-LIKE OBJECT, optional
+        ARRAY CONTAINING VARIANCE VALUES TO USE FOR THE GAUSSIAN DENSITY KERNEL.
+        The default is the tuple of values contained in sig2v_default, the same
+        values used in the original paper by Vinga & Almeida (2004).
+    refseq : BOOL, optional
+        NAME OF SEQUENCE. The default is None.
+    filesave : BOOL, optional
+        OPTION TO SAVE RESULTS TO FILE. The default is False.
 
     Returns
     -------
-    r2usm_dict : TYPE
-        DESCRIPTION.
+    r2usm_dict : DICT
+        DICT CONTAINING SIG2:ENTROPY AS KEY:VALUE PAIRS.
 
     """
     #convert cgr is ndarray
@@ -82,8 +85,11 @@ def renyi2usm(cgr_coords, sig2v=sig2v_default, refseq=None, Plot=True, filesave=
     Parameters
     ----------
     cgr : ARRAY LIKE CONTAINING USM FORWARD COORDINATES AS ROWS
-    sig2v : ARRAY LIKE CONTAINING VARIANCES, SIG2, TO USE WITH GAUSSIAN KERNEL IN
-            PARZEN WINDOW METHOD
+    sig2v : ARRAY LIKE, optional
+        ARRAY LIKE CONTAINING VARIANCES, SIG2, TO USE WITH GAUSSIAN KERNEL IN
+        PARZEN WINDOW METHOD. The default is the tuple of values contained in
+        sig2v_default, the same values used in the original paper by
+        Vinga & Almeida (2004).
     refseq : STRING, optional
         NAME OF SEQUENCE. The default is None.
     Plot : BOOLEAN, optional
