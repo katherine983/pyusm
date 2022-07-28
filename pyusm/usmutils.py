@@ -39,7 +39,7 @@ def ngon_coords(verts):
 
     vert_array : 2D NUMPY ARRAY
         N x 2 NUMPY ARRAY, WHERE N=verts. EACH ROW IS AN X,Y COORDINATE FOR ONE
-        THE VERTICES OF THE N-GON.s
+        THE VERTICES OF THE N-GON.
 
     """
     radians=[]
