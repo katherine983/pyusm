@@ -7,134 +7,169 @@ Created on Sun May 17 17:38:17 2020
 
 import numpy as np
 import copy
-from pyusm.usmutils import CGR
+from .usmutils import ngon_coords
 
-# class CGR():
-#     """
-#     Creates a container for CGR coordinates with attributes related to the alphabet of the sequence,
-#     coordinates of alphabet, specifying forward or backward generated coordinates and form of CGR (either USM or 2D, default is USM).
+def check_alphabet(uu, A):
+    # This function takes a user-defined list of the symbols in the alphabet, A, and compares with the set of unique symbols found in seq, uu
+    # raises exceptions if the length of uu is greater than A or if a symbol occurs in seq that is not in A.
 
-#     Class
-#     """
-#     __slots__= ['fw', 'bw', 'coord_dict', 'form']
-#     def __init__(self, forward, backward=None, coord_dict=None, form='USM'):
-#         self.fw=forward
-#         self.bw=backward
-#         self.coord_dict = coord_dict
-#         self.form=form
+    # sort A for consistency across data structures
+    A.sort()
+    #d is dimension of alphabet
+    d=len(A)
+    assert d >= len(uu), "Unique sequence units greater than alphabet. List of unique sequence units: {}".format(uu)
+    # ix is list of the index in A of each symbol in uu
+    ix = []
+    for i in range(len(uu)):
+        assert uu[i] in A, "Unrecognized symbol in sequence. List of unique sequence units: {}".format(uu)
+        j = A.index(uu[i])
+        ix.append(j)
+    return ix
 
-#     def coord_dictMake(self, alphabet, vertices):
-#         #creates the coord_dict from the list of alphabet and vertices in correct order
-#         self.coord_dict=dict(zip(alphabet, vertices))
-
-def usm_make(sequence, A=None, seed='centroid', deep_copy=True):
-    """
-    Calculates USM coordinates of a discrete-valued sequence of arbitrary alphabet size.
-
-    Parameters
-    ----------
-    sequence : LIST OR ARRAY TYPE;
-        CATEGORICAL SEQUENCE OF DATA
-    A : LIST, optional;
-        LIST CONTAINING ALL POSSIBLE SYMBOLS OF THE ALPHABET OF THE SEQUENCE. The default is None.
-        If default, will take alphabet as set of unique characters in seq.
-    seed : STRING, default 'rand';
-        INDICATES THE PROCEDURE FOR SEEDING THE USM IFS
-    deep_copy : BOOL
-        IF TRUE (DEFAULT) WILL USE A DEEP COPY OF THE SEQUENCE TO MAKE THE USM.
-
-    Returns
-    -------
-    An instance of a CGR object. CGR.fw is a list of ndarrays containing the
-    forward SM coordinates for each symbol in seq
-
-    """
-    if deep_copy is True:
-        seq=copy.deepcopy(sequence)
-    else:
-        seq = sequence
-    N=len(seq)
+def get_alphabet_coords(seq, alphabet=None, form='USM'):
     #determine number of unique symbols in seq
     #uu is an ndarray of the unique values in seq, sorted.
     #J is an ndarray size = len(seq) containing the index values of uu that could recreate seq
     uu, J = np.unique(seq, return_inverse=True)
-
-    #determine the dimension, d, of the unit hypercube whose edges correspond to each uu
-    if A:
+    # get A, a sorted list of the alphabet of the sequence
+    if alphabet:
+        if isinstance(alphabet, dict):
+            coord_dict = alphabet
+            A = list(coord_dict.keys())
+        else:
+            coord_dict = None
+            # assumes alphabet is an array-like object or set like object
+            A = list(alphabet)
         A.sort()
-        #print("A", A)
-        d=len(A)
-        assert d >= len(uu), "Unique sequence units greater than alphabet. List of unique sequence units: {}".format(uu)
-        #to ensure consistency in coordinate locations for sequences with the same generating alphabet but are missing 1 or more alphabet symbols.
-        ix = []
-        for i in range(len(uu)):
-            assert uu[i] in A, "Unrecognized symbol in sequence. List of unique sequence units: {}".format(uu)
-            #print("uu[i]", uu[i])
-            #get the index in A of each symbol in uu
-            y = A.index(uu[i])
-            #print("Index of uu[i] in A", y)
-            ix.append(y)
-        #create sparse identity matrix in d dimensions
-        Y=np.identity(d)
-        #create matrix with only rows in ix so that the index of uu used in J
-        # is associated with the correct coordinate in Y.
-        Y=Y[ix]
+        # ix is list of the index in A of each symbol in uu
+        ix = check_alphabet(uu, A)
     else:
-        #get number of unique symbols in seq
-        d=len(uu)
-        A=uu
-        #create sparse identity matrix for uu
-        Y=np.identity(d)
-    # X is an N x d array where the ith row is the vertex coordinate for the symbol at the index i in seq
-    X=Y[J]
-    X_rev = copy.deepcopy(np.flip(X, 0))
-    #print("X", X)
-    if seed=='centroid':
-        f=[np.repeat(0.5, d)]
-        b=[np.repeat(0.5, d)]
-        for i in range(N):
-            u=0.5*f[i]+0.5*X[i]
-            v=0.5*b[i]+0.5*X_rev[i]
-            f.append(u)
-            b.append(v)
-    elif seed=='circular':
-        c=[np.repeat(0.5, d)]
-        for i in range(N):
-            u=0.5*c[i]+0.5*X[i]
-            c.append(u)
-        b=[c[-2]]
-        for i in range(N):
-            u=0.5*b[i]+0.5*X_rev[i]
-            b.append(u)
-        f=[b[-2]]
-        for i in range(N):
-            u=0.5*f[i]+0.5*X[i]
-            f.append(u)
-    elif seed=='rand':
-        c=np.random(0,1,d)
-        f=[c]
-        b=[c]
-        for i in range(N):
-            u=0.5*f[i]+0.5*X[i]
-            v=0.5*b[i]+0.5*X_rev[i]
-            f.append(u)
-            b.append(v)
-    #print(c)
-    fl = [arr.tolist() for arr in f]
-    bl = [arr.tolist() for arr in b]
-    USM=CGR(forward=fl[1:], backward=bl[1:], form='USM')
-    vert_coords=list(map(tuple, np.identity(d)))
-    USM.coord_dictMake(A,vert_coords)
-    return USM
+        coord_dict = None
+        A = uu
+        ix = None
+    # get dimension, d, of the alphabet, which equals the number of vertices in the map
+    d = len(A)
+    # get Y, a numpy array of vertex coordinates, where each row is a map coordinate
+    if coord_dict:
+        # if user provided coord_dict, Y is constructed from the 1D arrays stored in the values of the dict
+        # get list of dict values in the order of the sorted keys in A
+        vrts = [coord_dict[alph] for alph in A]
+        Y = np.array(vrts)
+    elif not coord_dict:
+        # if no coord_dict provided, Y is constructed from the default definitions
+        if form == 'USM':
+            Y = np.identity(d)
+        elif form == 'CGR':
+            Y = ngon_coords(d)
+        # create a coord_dict with the newly constructed coord array
+        coord_dict = coord_dict_make(A, Y)
+    if ix:
+        # if some of the symbols in the user-defined alphabet are missing in seq
+        # then we remove the coordinate rows in Y for the symbols that are missing
+        # so that the index of uu used in J is associated with the correct coordinate in Y.
+        Y = Y[ix]
+    # X is an N x d array where the ith row is the vertex coordinate for to the symbol at the index i in seq
+    X = Y[J]
+    return X, coord_dict
 
-def ngon_coords(verts):
-    radians=[]
-    for k in range(verts):
-        rad = (2*np.pi*k)/verts
-        radians.append(rad)
-    x_vals = np.cos(radians)
-    y_vals =np.sin(radians)
-    return x_vals, y_vals
+def coord_dict_make(alphabet, vertices):
+    #creates the coord_dict from the list of alphabet and vertices in correct order
+    coord_dict=dict(zip(alphabet, vertices))
+    return coord_dict
+
+class USM:
+    """
+    Creates a container for CGR coordinates with attributes related to the alphabet of the sequence,
+    coordinates of alphabet, specifying forward or backward generated coordinates and form of CGR (either USM or 2D, default is USM).
+
+    Class
+    """
+    __slots__= ['fw', 'bw', 'coord_dict', 'form']
+    def __init__(self, forward, backward=None, coord_dict=None, form='USM'):
+        self.fw=forward
+        self.bw=backward
+        self.coord_dict = coord_dict
+        self.form=form
+
+    @classmethod
+    def make_usm(cls, sequence, A=None, seed='centroid', deep_copy=True):
+        """
+        Calculates USM coordinates of a discrete-valued sequence of arbitrary alphabet size.
+
+        Parameters
+        ----------
+        sequence : LIST OR ARRAY TYPE;
+            CATEGORICAL SEQUENCE OF DATA
+        A : LIST OR DICT, optional
+            IF LIST, SHOULD CONTAIN ALL POSSIBLE SYMBOLS OF THE ALPHABET OF THE
+            SEQUENCE. FUNCTION WILL THEN CALCULATE VERTEX COORDINATES AUTOMATICALLY.
+            IF DICT, SHOULD HAVE ONE ENTRY FOR EACH POSSIBLE SYMBOL OF
+            THE ALPHABET OF THE SEQUENCE WHERE THE ENTRY KEY IS THE SYMBOL AND THE
+            ENTRY VALUE IS THE 1D ARRAY-LIKE COORDINATE TO BE ASSOCIATED WITH
+            THAT SYMBOL.
+            The default is None.
+            If default, will take alphabet as set of unique characters in seq and
+            calculate vertex coordinates automatically.
+        seed : STRING, default 'centroid';
+            INDICATES THE PROCEDURE FOR SEEDING THE USM IFS
+        deep_copy : BOOL
+            IF TRUE (DEFAULT) WILL USE A DEEP COPY OF THE SEQUENCE TO MAKE THE USM.
+
+        Returns
+        -------
+        USM : An instance of a CGR object. CGR.fw is a list of ndarrays containing
+            the forward SM coordinates for each symbol in seq
+
+        """
+        if deep_copy is True:
+            seq=copy.deepcopy(sequence)
+        else:
+            seq = sequence
+        N = len(seq)
+        # X is an N x d array where the ith row is the vertex coordinate for the symbol at the index i in seq
+        # each key:value in coord_dict is a symbol:vertex coordinate array for
+        # each symbol in the alphabet of seq
+        X, coord_dict = get_alphabet_coords(seq, alphabet=A, form='USM')
+        X_rev = copy.deepcopy(np.flip(X, 0))
+        if seed=='centroid':
+            f=[np.repeat(0.5, d)]
+            b=[np.repeat(0.5, d)]
+            for i in range(N):
+                u=0.5*f[i]+0.5*X[i]
+                v=0.5*b[i]+0.5*X_rev[i]
+                f.append(u)
+                b.append(v)
+        elif seed=='circular':
+            c=[np.repeat(0.5, d)]
+            for i in range(N):
+                u=0.5*c[i]+0.5*X[i]
+                c.append(u)
+            b=[c[-2]]
+            for i in range(N):
+                u=0.5*b[i]+0.5*X_rev[i]
+                b.append(u)
+            f=[b[-2]]
+            for i in range(N):
+                u=0.5*f[i]+0.5*X[i]
+                f.append(u)
+        elif seed=='rand':
+            c=np.random(0,1,d)
+            f=[c]
+            b=[c]
+            for i in range(N):
+                u=0.5*f[i]+0.5*X[i]
+                v=0.5*b[i]+0.5*X_rev[i]
+                f.append(u)
+                b.append(v)
+        #print(c)
+        fl = [arr.tolist() for arr in f]
+        bl = [arr.tolist() for arr in b]
+        USM=cls(forward=fl[1:], backward=bl[1:], coord_dict=coord_dict, form='USM')
+        #vert_coords=list(map(tuple, np.identity(d)))
+        #USM.coord_dictMake(A,vert_coords)
+        return USM
+
+
 
 def cgr2d(seq, A=None, vert_dict=False):
     """
@@ -152,7 +187,8 @@ def cgr2d(seq, A=None, vert_dict=False):
         SEQUENCE. FUNCTION WILL THEN CALCULATE VERTEX COORDINATES AUTOMATICALLY.
         IF DICT, SHOULD HAVE ONE ENTRY FOR EACH POSSIBLE SYMBOL OF
         THE ALPHABET OF THE SEQUENCE WHERE THE ENTRY KEY IS THE SYMBOL AND THE
-        ENTRY VALUE IS THE COORDINATE TO BE ASSOCIATED WITH THAT SYMBOL.
+        ENTRY VALUE IS THE 1D ARRAY-LIKE COORDINATE TO BE ASSOCIATED WITH
+        THAT SYMBOL.
         The default is None.
         If default, will take alphabet as set of unique characters in seq and
         calculate vertex coordinates automatically.
@@ -177,40 +213,20 @@ def cgr2d(seq, A=None, vert_dict=False):
             #print("A", A)
             #d is dimension of alphabet
             d=len(A)
-            assert d >= len(uu), "Unique sequence units greater than alphabet. List of unique sequence units: {}".format(uu)
-            ix = []
-            for i in range(len(uu)):
-                assert uu[i] in A, "Unrecognized symbol in sequence. List of unique sequence units: {}".format(uu)
-                #print("uu[i]", uu[i])
-                y = A.index(uu[i])
-                #print("Index of uu[{}] in A".format(i), y)
-                ix.append(y)
+            ix = check_alphabet(uu, A)
             #get coordinates for vertices of an equilateral d-gon
-            """
-            radians=[]
-            for k in range(d):
-                rad = (2*np.pi*k)/d
-                radians.append(rad)
-            x_vals= np.cos(radians)
-            y_vals=np.sin(radians)
-            """
             x_vals, y_vals = ngon_coords(d)
-            Y= np.column_stack((x_vals, y_vals))
-            Y=Y[ix]
+            # Y= np.column_stack((x_vals, y_vals))
+            # Y=Y[ix]
         elif isinstance(A, dict):
             a, vrts = zip(*A.items())
             d = len(a)
-            assert d >= len(uu), "Unique sequence units greater than alphabet. List of unique sequence units: {}".format(uu)
-            ix = []
-            for i in range(len(uu)):
-                assert uu[i] in a, "Unrecognized symbol in sequence. List of unique sequence units: {}".format(uu)
-                #print("uu[i]", uu[i])
-                y = a.index(uu[i])
-                #print("Index of uu[{}] in A".format(i), y)
-                ix.append(y)
+            ix = check_alphabet(uu, a)
             x_vals, y_vals = zip(*vrts)
-            Y= np.column_stack((x_vals, y_vals))
-            Y=Y[ix]
+        # x_vals become the first column and y_vals the second
+        # Y is an N x 2 array and each row in Y is an x,y pair
+        Y= np.column_stack((x_vals, y_vals))
+        Y=Y[ix]
     else:
         #get number of unique symbols in seq
         d=len(uu)
@@ -267,30 +283,3 @@ def usm_density(c, L):
     return n
 
 if __name__ == "__main__":
-    import pandas as pd
-    from timeit import Timer
-    #import matplotlib.pyplot as plt
-
-    data=np.random.randint(8, size=10000)
-    coords=cgr2d(data)
-    octogon = pd.DataFrame(np.asarray(coords.fw), columns=['x', 'y'])
-    octogon.plot.scatter(x='x', y='y', s=2)
-    #print(data)
-    #c=usm_make(data)
-    #n= usm_density(c, 3)
-    #%%
-    """
-    #print(c.fw[0:20])
-    forward=c.fw
-    print(type(forward))
-    #print(c.bw)
-    """
-    #%%
-    """
-    from entropy_renyi import renyi2usm as renyi
-    sig2v = np.genfromtxt('sig2.csv', delimiter=',')
-    R2 = renyi(cgr_coords=forward, sig2v=sig2v)
-    #print(R2)
-    t = Timer(lambda: usm_make(data))
-    print(t.timeit(number=1))
-    """
