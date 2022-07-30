@@ -18,7 +18,7 @@ import copy
 #from Bio import SeqRecord
 
 # set the default variance vector to use with Gaussian density kernels
-sig2v_default = (1e-10,1.7783e-10,3.1623e-10,5.6234e-10,1e-09,1.7783e-09,
+SIG2V_DEFAULT = (1e-10,1.7783e-10,3.1623e-10,5.6234e-10,1e-09,1.7783e-09,
                   3.1623e-09,5.6234e-09,1e-08,1.7783e-08,3.1623e-08,5.6234e-08,
                   1e-07,1.7783e-07,3.1623e-07,5.6234e-07,1e-06,1.7783e-06,
                   3.1623e-06,5.6234e-06,1e-05,1.7783e-05,3.1623e-05,5.6234e-05,
@@ -26,7 +26,7 @@ sig2v_default = (1e-10,1.7783e-10,3.1623e-10,5.6234e-10,1e-09,1.7783e-09,
                   0.0031623,0.0056234,0.01,0.017783,0.031623,0.056234,0.1,0.17783,
                   0.31623,0.56234,1,1.7783,3.1623,5.6234,10,17.783,31.623,56.234,100)
 
-def renyi4d(cgr, sig2v=sig2v_default, refseq=None, filesave=False):
+def renyi4d(cgr, sig2v=SIG2V_DEFAULT, refseq=None, filesave=False):
     """
     renyi4d matches exact formula of the renyi entropy algorithm of a 4d usm used by Vinga & Almeida 2004.
 
@@ -79,7 +79,7 @@ def renyi4d(cgr, sig2v=sig2v_default, refseq=None, filesave=False):
 
     return r2usm_dict
 
-def renyi2usm(cgr_coords, sig2v=sig2v_default, refseq=None, Plot=True, filesave=False, deep_copy=True):
+def renyi2usm(cgr_coords, sig2v=SIG2V_DEFAULT, refseq=None, Plot=True, filesave=False, deep_copy=True):
     """
     Calculates Renyi quadratic entropy of a set of USM forward coordinates
 
@@ -168,6 +168,7 @@ def usm_density(c, L):
     print("B and J",B, J)
     n=np.histogram(J, bins=nbin)
     return n
+
 if __name__ == "__main__":
     #from Bio import SeqIO
     from usm_make import usm_make

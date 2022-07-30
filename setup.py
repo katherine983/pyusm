@@ -11,7 +11,7 @@ at https://github.com/pypa/sampleproject on 7/21/2022.
 from setuptools import setup, find_packages
 import pathlib
 
-here = pathlib.Path(__file__).resolve()
+here = pathlib.Path(__file__).resolve().parent
 
 long_description = (here / "README.md").read_text(encoding="utf-8")
 
