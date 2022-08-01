@@ -7,7 +7,7 @@ Created on Sun May 17 17:38:17 2020
 
 import numpy as np
 import copy
-from .usmutils import ngon_coords
+#from .usmutils import ngon_coords
 
 def check_alphabet(uu, A):
     # This function takes a user-defined list of the symbols in the alphabet, A, and compares with the set of unique symbols found in seq, uu
@@ -294,5 +294,25 @@ def usm_density(c, L):
     n=np.histogram(J, bins=nbin)
     return n
 
-if __name__ == "__main__":
-    pass
+
+if __name__ == '__main__':
+    if __package__ is None:
+        import sys, pathlib
+        sys.path.append(pathlib.Path(__file__).parent)
+        from usmutils import ngon_coords
+        cwd = pathlib.Path.cwd()
+        demo_dir = cwd / "tests/"
+        fname = "MC0.txt"
+        file_to_open = demo_dir / "test_data" / fname
+        with open(file_to_open, 'r') as fhand:
+            seq = fhand.read()
+            data= list(seq)
+            #print(data)
+            mc0usm = USM.make_usm(data, A=['A','C','G','T'])
+        og_mc0_coords = 'og_MC0_coords.csv'
+        file_to_open2 = demo_dir / "expected_output" / og_mc0_coords
+        og_mc0 = np.genfromtxt(file_to_open2, delimiter=',')
+        print(np.isclose(np.array(mc0usm.fw, dtype=np.float64), og_mc0))
+        print(np.allclose(np.array(mc0usm.fw, dtype=np.float64), og_mc0))
+    else:
+        from .usmutils import ngon_coords

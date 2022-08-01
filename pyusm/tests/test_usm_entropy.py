@@ -63,9 +63,12 @@ def test_renyiusm_regression(datafilepairs, test_data_dir,
     rn2hand = os.path.join(expected_out_dir, rn2file)
     with open(seqhand, 'r') as fhand:
         seq = list(fhand.read())
+    assert len(seq) == 2000
     usm = pyusm.USM.make_usm(seq, A=dna_alphabet_complete_sorted)
     #outfile = os.path.join(expected_out_dir, '{}_rn2_pkgvrsn{}'.format(seqfile.split('.')[0], pyusm.__version__))
     rn2 = pyusm.usm_entropy.renyi2usm(usm.fw, Plot=False)
-    rn2array = np.array(list(rn2.items()), dtype=float).sort(axis=0)
-    og_rn2array = np.array(parse_rn2_file(rn2hand), dtype=float).sort()
-    assert np.allclose(rn2array.astype(np.float64), og_rn2array.sort(axis=0))
+    rn2array = list(rn2.items())
+    rn2array.sort()
+    rn2array = np.array(rn2array, dtype=np.float64)
+    og_rn2array = np.array(parse_rn2_file(rn2hand), dtype=np.float64)
+    assert np.allclose(rn2array, og_rn2array)

@@ -18,13 +18,25 @@ import copy
 #from Bio import SeqRecord
 
 # set the default variance vector to use with Gaussian density kernels
-SIG2V_DEFAULT = (1e-10,1.7783e-10,3.1623e-10,5.6234e-10,1e-09,1.7783e-09,
-                  3.1623e-09,5.6234e-09,1e-08,1.7783e-08,3.1623e-08,5.6234e-08,
-                  1e-07,1.7783e-07,3.1623e-07,5.6234e-07,1e-06,1.7783e-06,
-                  3.1623e-06,5.6234e-06,1e-05,1.7783e-05,3.1623e-05,5.6234e-05,
-                  0.0001,0.00017783,0.00031623,0.00056234,0.001,0.0017783,
-                  0.0031623,0.0056234,0.01,0.017783,0.031623,0.056234,0.1,0.17783,
-                  0.31623,0.56234,1,1.7783,3.1623,5.6234,10,17.783,31.623,56.234,100)
+# SIG2V_DEFAULT = (1e-10,1.7783e-10,3.1623e-10,5.6234e-10,1e-09,1.7783e-09,
+#                   3.1623e-09,5.6234e-09,1e-08,1.7783e-08,3.1623e-08,5.6234e-08,
+#                   1e-07,1.7783e-07,3.1623e-07,5.6234e-07,1e-06,1.7783e-06,
+#                   3.1623e-06,5.6234e-06,1e-05,1.7783e-05,3.1623e-05,5.6234e-05,
+#                   0.0001,0.00017783,0.00031623,0.00056234,0.001,0.0017783,
+#                   0.0031623,0.0056234,0.01,0.017783,0.031623,0.056234,0.1,0.17783,
+#                   0.31623,0.56234,1,1.7783,3.1623,5.6234,10,17.783,31.623,56.234,100)
+SIG2V_DEFAULT = ('1.000000e-10', '1.778279e-10', '3.162278e-10', '5.623413e-10',
+                 '1.000000e-09', '1.778279e-09', '3.162278e-09', '5.623413e-09',
+                 '1.000000e-08', '1.778279e-08', '3.162278e-08', '5.623413e-08',
+                 '1.000000e-07', '1.778279e-07', '3.162278e-07', '5.623413e-07',
+                 '1.000000e-06', '1.778279e-06', '3.162278e-06', '5.623413e-06',
+                ' 1.000000e-05', '1.778279e-05', '3.162278e-05', '5.623413e-05',
+                '1.000000e-04', '1.778279e-04', '3.162278e-04', '5.623413e-04',
+                '1.000000e-03', '1.778279e-03', '3.162278e-03', '5.623413e-03',
+                '1.000000e-02', '1.778279e-02', '3.162278e-02', '5.623413e-02',
+                '1.000000e-01', '1.778279e-01', '3.162278e-01', '5.623413e-01',
+                '1', '1.778279e+00', '3.162278e+00', '5.623413e+00', '10', '1.778279e+01',
+                '3.162278e+01', '5.623413e+01', '100')
 
 def renyi4d(cgr, sig2v=SIG2V_DEFAULT, refseq=None, filesave=False):
     """
@@ -108,7 +120,7 @@ def renyi2usm(cgr_coords, sig2v=SIG2V_DEFAULT, refseq=None, Plot=True, filesave=
     Dictionary containing renyi quadratic entropy of the USM for each sig2 value.
 
     """
-    sig2v = np.array(sig2v)
+    sig2v = np.array(sig2v, dtype=np.float64)
     if deep_copy is True:
         #convert cgr is ndarray
         cgr=copy.deepcopy(cgr_coords)
@@ -171,7 +183,7 @@ def usm_density(c, L):
 
 if __name__ == "__main__":
     #from Bio import SeqIO
-    from usm_make import usm_make
+    from pyusm import USM
     """
     char_val = ["a","b","c","d","e","f","g","h","i"]
     data = random.choices(char_val, k=35000)
@@ -179,31 +191,54 @@ if __name__ == "__main__":
     data_string = data_string.join(data)
     """
     cwd = pathlib.Path.cwd()
-    demo_dir = cwd / "demo_files"
-    fname = "Es.txt"
-    file_to_open = demo_dir / "seq" / fname
+    demo_dir = cwd / "tests/"
+    fname = "R1.txt"
+    file_to_open = demo_dir / "test_data" / fname
     with open(file_to_open, 'r') as fhand:
         seq = fhand.read()
+        print(seq, type(seq))
         data_string = str(seq)
         #print(data_string, type(data_string))
         data= list(data_string)
         #print(data)
-        cgr = usm_make(data, A=['A','C','G','T'])
+        cgr = USM.make_usm(data, A=['A','C','G','T'])
+    rn2dict = renyi2usm(cgr.fw, refseq=fname)
+    rn2arrayN = list(rn2dict.items())
+    rn2arrayN.sort()
+    rn2arrayN = np.array(rn2arrayN, dtype=np.float64)
+    rn2file = "renyi2usm_AA.rn2"
+    file_to_open2 = demo_dir / "expected_output" / rn2file
+    with open(file_to_open2, 'r') as fhand:
+        lines = fhand.readlines()
+    rn2array = []
+    row = 0
+    for line in lines:
+        if row < 2:
+            row += 1
+            continue
+        else:
+            row += 1
+            line = line.rstrip().split('\t')
+            #print(line)
+            rn2array.append([float(line[0].strip()), float(line[1].strip())])
+    rn2arrayOG = np.array(rn2array, dtype=np.float64)
+    print(np.isclose(rn2arrayN, rn2arrayOG))
+    print(np.allclose(rn2arrayN, rn2arrayOG))
+    print(np.array_equal(rn2arrayN, rn2arrayOG))
         #print("cgr", cgr)
         #cgr = np.asarray(cgr)
         #np.savetxt("cgr_MC0-py-2.csv", cgr, delimiter=",")
         #sig2va = np.genfromtxt(demo_dir.joinpath('sig2.csv'), delimiter=',')
-        np.set_printoptions(suppress=False)
-        print(sig2v)
+        #np.set_printoptions(suppress=False)
+        # print(sig2v)
 
-        print(sig2v == sig2va)
-        print(sig2v.dtype)
-        print(float(sig2v[0]))
+        # print(sig2v == sig2va)
+        # print(sig2v.dtype)
+        # print(float(sig2v[0]))
 #%%
-        symbols, freqs = np.unique(data, return_counts=True)
-        print("renyi2usm")
-        print("----------------------------------------------------------")
-        print(renyi2usm(cgr.fw, sig2v, refseq=fname))
+        #print("renyi2usm")
+        #print("----------------------------------------------------------")
+        #print(renyi2usm(cgr.fw, refseq=fname))
         #print("renyi4d")
         #print("----------------------------------------------------------")
         #print(renyi4d(cgr, sig2v, refseq=fname))
