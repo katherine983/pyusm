@@ -1,0 +1,12 @@
+LICENSE
+README.md
+setup.py
+pyusm/__init__.py
+pyusm/usm.py
+pyusm/usm_entropy.py
+pyusm/usmutils.py
+pyusm.egg-info/PKG-INFO
+pyusm.egg-info/SOURCES.txt
+pyusm.egg-info/dependency_links.txt
+pyusm.egg-info/requires.txt
+pyusm.egg-info/top_level.txt
