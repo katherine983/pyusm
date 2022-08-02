@@ -27,7 +27,8 @@ setup(
       keywords = "CGR, chaos game representation, universal sequence maps, USM, iterated function systems",
       install_requires = ['scipy>=1.6.2',
                           'numpy>=1.20.1',
-                          'matplotlib>=3.3.4'
+                          'matplotlib>=3.3.4',
+                          'pytest>=6.2.3'
                           ],
       packages = ['pyusm'],
       python_requires = ">=3.8")
