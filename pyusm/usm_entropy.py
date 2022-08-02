@@ -7,7 +7,6 @@ Created on Thu May 14 13:14:53 2020
 packages: scipy1.8.1, matplotlib
 """
 
-
 import numpy as np
 from scipy.spatial.distance import pdist
 import matplotlib.pyplot as plt
@@ -18,13 +17,6 @@ import copy
 #from Bio import SeqRecord
 
 # set the default variance vector to use with Gaussian density kernels
-# SIG2V_DEFAULT = (1e-10,1.7783e-10,3.1623e-10,5.6234e-10,1e-09,1.7783e-09,
-#                   3.1623e-09,5.6234e-09,1e-08,1.7783e-08,3.1623e-08,5.6234e-08,
-#                   1e-07,1.7783e-07,3.1623e-07,5.6234e-07,1e-06,1.7783e-06,
-#                   3.1623e-06,5.6234e-06,1e-05,1.7783e-05,3.1623e-05,5.6234e-05,
-#                   0.0001,0.00017783,0.00031623,0.00056234,0.001,0.0017783,
-#                   0.0031623,0.0056234,0.01,0.017783,0.031623,0.056234,0.1,0.17783,
-#                   0.31623,0.56234,1,1.7783,3.1623,5.6234,10,17.783,31.623,56.234,100)
 SIG2V_DEFAULT = ('1.000000e-10', '1.778279e-10', '3.162278e-10', '5.623413e-10',
                  '1.000000e-09', '1.778279e-09', '3.162278e-09', '5.623413e-09',
                  '1.000000e-08', '1.778279e-08', '3.162278e-08', '5.623413e-08',
@@ -154,6 +146,60 @@ def renyi2usm(cgr_coords, sig2v=SIG2V_DEFAULT, refseq=None, Plot=True, filesave=
             fname = 'renyi2_{}'.format(seqname)
             plt.savefig(fname, format='png')
     return r2usm_dict
+
+def positive_asymptote(d, sig2v=SIG2V_DEFAULT):
+    """
+    Function to output x and y coordinates of graph asymptote of the graph
+    of Renyi vs. ln sig2 as lnsig2 approaches positive infinity. This is the
+    graph plotted by renyi2usm().
+
+    See proof in doc/demo_usm_entropy.
+
+    Parameters
+    ----------
+    d : INT
+        DIMENSION OF THE USM FROM WHICH r2usm_dict WAS COMPUTED.
+    sig2v : ARRAY-LIKE
+        DEFAULT ARE THE MODULE'S DEFAULT SIGMA SQUARED VALUES
+
+    Returns
+    -------
+    xvals, yvals : AN ARRAY OF X VALUES AND AN ARRAY OF Y VALUES TO BE GRAPHED
+
+    """
+    sig2_arr = np.array(sig2v)
+    xvals = np.log(sig2_arr)
+    yvals = np.log((2*np.sqrt(sig2_arr)*np.sqrt(np.pi))**d)
+    return xvals, yvals
+
+def negative_asymptote(d, N, sig2v=SIG2V_DEFAULT):
+    """
+    Function to output x and y coordinates of graph asymptote of the graph
+    of Renyi vs. ln sig2 as lnsig2 approaches negative infinity. This is the
+    graph plotted by renyi2usm().
+
+    See proof in doc/demo_usm_entropy.
+
+    Parameters
+    ----------
+    d : INT
+        DIMENSION OF THE USM FROM WHICH r2usm_dict WAS COMPUTED.
+    N : INT
+        NUMBER OF COORDINATES IN THE USM MAP (IE THE LENGTH OF THE SEQUENCE
+        MAPPED IN THE USM)
+    sig2v : ARRAY-LIKE
+        DEFAULT ARE THE MODULE'S DEFAULT SIGMA SQUARED VALUES
+
+    Returns
+    -------
+    xvals, yvals : AN ARRAY OF X VALUES AND AN ARRAY OF Y VALUES TO BE GRAPHED
+
+    """
+    sig2_arr = np.array(sig2v)
+    xvals = np.log(sig2_arr)
+    yvals = np.log(N*((2*np.sqrt(sig2_arr)*np.sqrt(np.pi))**d))
+    return xvals, yvals
+
 
 def usm_density(c, L):
     """

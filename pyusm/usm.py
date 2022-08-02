@@ -294,12 +294,13 @@ def usm_density(c, L):
     n=np.histogram(J, bins=nbin)
     return n
 
-
+if __package__ is None:
+    import sys, pathlib
+    sys.path.append(pathlib.Path(__file__).parent)
+    from usmutils import ngon_coords
+else:
+    from .usmutils import ngon_coords
 if __name__ == '__main__':
-    if __package__ is None:
-        import sys, pathlib
-        sys.path.append(pathlib.Path(__file__).parent)
-        from usmutils import ngon_coords
         cwd = pathlib.Path.cwd()
         demo_dir = cwd / "tests/"
         fname = "MC0.txt"
@@ -314,5 +315,3 @@ if __name__ == '__main__':
         og_mc0 = np.genfromtxt(file_to_open2, delimiter=',')
         print(np.isclose(np.array(mc0usm.fw, dtype=np.float64), og_mc0))
         print(np.allclose(np.array(mc0usm.fw, dtype=np.float64), og_mc0))
-    else:
-        from .usmutils import ngon_coords
