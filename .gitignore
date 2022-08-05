@@ -168,3 +168,4 @@ cython_debug/
 #.idea/
 pyusm.egg-info/PKG-INFO
 pyusm.egg-info/requires.txt
+pyusm.egg-info/PKG-INFO
