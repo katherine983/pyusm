@@ -25,8 +25,8 @@ setup(
       author = "Katherine Wuestney",
       # author_email = "katherineann983@gmail.com",
       keywords = "CGR, chaos game representation, universal sequence maps, USM, iterated function systems",
-      install_requires = ['scipy>=1.6.2',
-                          'numpy>=1.20.1',
+      install_requires = ['scipy>=1.6',
+                          'numpy>=1.20',
                           'matplotlib>=3.3.4',
                           'pytest>=6.2.3'
                           ],
