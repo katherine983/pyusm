@@ -1,0 +1,980 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Demo of USM Renyi Entropy in Python &#8212; Documentation of pyusm Package</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Demo of Universal Sequence Maps (USM) in Python" href="demo_usm.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="index.html">
+      
+      
+      
+      <h1 class="site-logo" id="site-title">Documentation of pyusm Package</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    <no title>
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="use.html">
+   Brief Overview of Package Use
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="demo_usm.html">
+   Demo of Universal Sequence Maps (USM) in Python
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Demo of USM Renyi Entropy in Python
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<div class="menu-dropdown menu-dropdown-launch-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Launch interactive content">
+      <i class="fas fa-rocket"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://mybinder.org/v2/gh/katherine983/pyusm/main?urlpath=tree/doc/demo_usm_entropy.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Launch on Binder"
+>
+  
+
+<span class="headerbtn__icon-container">
+  
+    <img src="_static/images/logo_binder.svg">
+  </span>
+<span class="headerbtn__text-container">Binder</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-repository-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Source repositories">
+      <i class="fab fa-github"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://github.com/katherine983/pyusm"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="headerbtn__text-container">repository</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/katherine983/pyusm/edit/main/doc/demo_usm_entropy.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Edit this page"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="headerbtn__text-container">suggest edit</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="_sources/demo_usm_entropy.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.ipynb</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#">
+   Demo of USM Renyi Entropy in Python
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#intro-and-review">
+     Intro and review
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#terminology-introduction-use-this-section-as-a-glossary">
+     Terminology Introduction - Use this section as a glossary
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#section-1-renyi-continuous-entropy-of-usm">
+   Section 1 Renyi Continuous Entropy of USM
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#renyi-continuous-entropy">
+     1.1 Renyi Continuous Entropy
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#parzen-window-kernel-density-estimation">
+     1.2 Parzen Window Kernel Density Estimation
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#equation-of-d-dimensional-renyi-entropy-of-usm">
+     1.3 Equation of
+     <em>
+      d
+     </em>
+     -dimensional Renyi Entropy of USM
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#section-2-demo-of-usm-entropy-module">
+   Section 2 Demo of usm_entropy module
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#simplification-of-entropy-equation-for-python-implementation">
+     2.1 Simplification of Entropy Equation for Python Implementation
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#usm-entropy-renyi2usm">
+     2.2 usm_entropy.renyi2usm()
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#section-3-asymptotic-behavior-of-renyi-entropy-by-natural-log-of-kernel-variance">
+   Section 3 Asymptotic Behavior of Renyi Entropy by Natural Log of Kernel Variance
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#asymptote-for-ln-sigma-2-to-infty">
+     3.1 Asymptote for
+     <span class="math notranslate nohighlight">
+      \(\ln\sigma^2 \to +\infty\)
+     </span>
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#asymptote-for-ln-sigma-2-to-0">
+     3.2 Asymptote for
+     <span class="math notranslate nohighlight">
+      \(\ln\sigma^2 \to 0^+\)
+     </span>
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#references">
+     References
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+    </nav>
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Demo of USM Renyi Entropy in Python</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#">
+   Demo of USM Renyi Entropy in Python
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#intro-and-review">
+     Intro and review
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#terminology-introduction-use-this-section-as-a-glossary">
+     Terminology Introduction - Use this section as a glossary
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#section-1-renyi-continuous-entropy-of-usm">
+   Section 1 Renyi Continuous Entropy of USM
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#renyi-continuous-entropy">
+     1.1 Renyi Continuous Entropy
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#parzen-window-kernel-density-estimation">
+     1.2 Parzen Window Kernel Density Estimation
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#equation-of-d-dimensional-renyi-entropy-of-usm">
+     1.3 Equation of
+     <em>
+      d
+     </em>
+     -dimensional Renyi Entropy of USM
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#section-2-demo-of-usm-entropy-module">
+   Section 2 Demo of usm_entropy module
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#simplification-of-entropy-equation-for-python-implementation">
+     2.1 Simplification of Entropy Equation for Python Implementation
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#usm-entropy-renyi2usm">
+     2.2 usm_entropy.renyi2usm()
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#section-3-asymptotic-behavior-of-renyi-entropy-by-natural-log-of-kernel-variance">
+   Section 3 Asymptotic Behavior of Renyi Entropy by Natural Log of Kernel Variance
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#asymptote-for-ln-sigma-2-to-infty">
+     3.1 Asymptote for
+     <span class="math notranslate nohighlight">
+      \(\ln\sigma^2 \to +\infty\)
+     </span>
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#asymptote-for-ln-sigma-2-to-0">
+     3.2 Asymptote for
+     <span class="math notranslate nohighlight">
+      \(\ln\sigma^2 \to 0^+\)
+     </span>
+    </a>
+   </li>
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#references">
+     References
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <section class="tex2jax_ignore mathjax_ignore" id="demo-of-usm-renyi-entropy-in-python">
+<h1>Demo of USM Renyi Entropy in Python<a class="headerlink" href="#demo-of-usm-renyi-entropy-in-python" title="Permalink to this headline">#</a></h1>
+<p><strong>How to compute continuous Renyi entropy of USM using the pyusm library</strong>
+By Katherine Wuestney</p>
+<p><strong>Contents</strong></p>
+<ul class="simple">
+<li><p><a class="reference external" href="#Intro">Introduction</a></p>
+<ul>
+<li><p><a class="reference external" href="#termintro">Terminology Introduction</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference external" href="#Section1">Section 1</a> Renyi continuous entropy of USM</p>
+<ul>
+<li><p><a class="reference external" href="#Section1.1">Section 1.1</a> Renyi Continuous Entropy</p></li>
+<li><p><a class="reference external" href="#Section1.2">Section 1.2</a> Parzen Window Kernel Density Estimation</p></li>
+<li><p><a class="reference external" href="#Section1.3">Section 1.3</a> Equation of <em>d</em>-dimensional Renyi Entropy of USM</p></li>
+</ul>
+</li>
+<li><p><a class="reference external" href="#Section2">Section 2</a> Demo of usm_entropy module</p>
+<ul>
+<li><p><a class="reference external" href="#Section2.1">Section 2.1</a> Simplification of Entropy Equation</p></li>
+</ul>
+</li>
+<li><p><a class="reference external" href="#Section3">Section 3</a></p>
+<ul>
+<li><p><a class="reference external" href="#Section3.1">Section 3.1</a></p></li>
+</ul>
+</li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span> <span class="nn">pyusm</span>
+<span class="kn">from</span> <span class="nn">pyusm</span> <span class="kn">import</span> <span class="n">usm_entropy</span>
+<span class="kn">from</span> <span class="nn">pyusm.tests.test_usm_entropy</span> <span class="kn">import</span> <span class="n">parse_rn2_file</span> <span class="k">as</span> <span class="n">parse_rn2_file</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p><a id='Intro'></a></p>
+<section id="intro-and-review">
+<h2>Intro and review<a class="headerlink" href="#intro-and-review" title="Permalink to this headline">#</a></h2>
+<p>Universal Sequence Maps (USM) <a class="reference external" href="#1">1</a> are a generalized version of the CGR maps first introduced by Jeffrey <a class="reference external" href="#2">2</a> and they function as generalized order-free Markov transition matrices of symbolic sequences. This property in particular, allows for us to compute a generalized entropy estimate of the sequence based on the density of USM coordinates themselves. For more background on USM see the notebook demonstration [‘demo_usm_make’ ](#link to github url). Vinga and Almeida  introduced a continuous quadratic Renyi entropy of the USM of DNA sequences in <a class="reference external" href="#3">3</a> which demonstrated promising discriminatory power. We build off of their work by implementing their algorithms in python and generalizing their entropy measure to <em>d</em>-dimensional USM. Proofs of the generalized equations are included in the sections below. In many aspects the usm_entropy module uses the original javascript and matlab toolkit (found at the github repository <a class="reference external" href="https://github.com/usm/usm.github.com.git">usm.github.com</a>) as a template, however, we make notable deviations from the original algorithms in order to implement the generalized equations and to be more pythonic.</p>
+<p><a id='termintro'></a></p>
+</section>
+<section id="terminology-introduction-use-this-section-as-a-glossary">
+<h2>Terminology Introduction - Use this section as a glossary<a class="headerlink" href="#terminology-introduction-use-this-section-as-a-glossary" title="Permalink to this headline">#</a></h2>
+<p>The topics presented in this notebook are highly cross-disciplinary and as such there are a variety of different terms used in the literature to refer to the same basic concepts. To ensure clarity of discussion we will define the following within the context of symbolic sequence analysis:</p>
+<ul class="simple">
+<li><p><strong>Symbol</strong> - a nominal data element which has no numeric magnitude in the general Euclidean sense. Symbols are common data types encountered in linguistics and natural language processing, information theory and cryptography as well as genomics. A symbol is congruous with a single category of a categorical variable. A symbol can be anything, including numbers, but it does not behave like regular numbers do as it is generally a proxy “symbolizing” some other construct.</p></li>
+<li><p><strong>Sequence</strong> or <strong>Symbolic sequence</strong> - a set of indexed symbols for which the order of the symbols is integral and thus object of analysis. Sequences are commonly encountered in genomics, time series analysis, linguistics and natural language processing, among others. Synonyms of sequence include strings, series, or sometimes vectors.</p></li>
+<li><p><strong>Generating function</strong> - a process or phenomenon which produces or is represented by a sequence of symbols.</p></li>
+<li><p><strong>Alphabet</strong> - the set of all possible symbols a generating function may produce. For example, if our sequence is a paragraph of a Charles Dickens novel, our generating function could be considered 19th century English typography, and our alphabet would be the 26 letters of the English alphabet plus each punctuation character and special character in use during that time. The term alphabet is congruous to the term “state space” from dynamical systems, in that the alphabet functions as the basic state space of a symbolic generating function. There are many different ways the size of an alphabet is refered to in the literature but for this discussion here we will refer to an alphabet’s size as its dimension <em>d</em>.</p></li>
+<li><p><strong>k-gram</strong> - a subsequence of a longer sequence comprising of k sequential symbols. For example, if our sequence is “ACTGGCA”, “TG” would be a k-gram with k=2. In symbolic sequence analysis we are often most interested in the frequency and patterns of k-grams of various lengths. Synonyms for k-gram include L-tuple, subsequence, words, motifs, sub-strings, or vectors.</p></li>
+<li><p><strong>Suffix</strong> - the k-gram occurring at the very end of a sequence. For “ACTGGCA”, its length 3 suffix is the k-gram “GCA”.</p></li>
+<li><p><strong>Prefix</strong> - the k-gram occurring at the very beginning of a sequence.</p></li>
+</ul>
+<p><a id='Section1'></a></p>
+</section>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="section-1-renyi-continuous-entropy-of-usm">
+<h1>Section 1 Renyi Continuous Entropy of USM<a class="headerlink" href="#section-1-renyi-continuous-entropy-of-usm" title="Permalink to this headline">#</a></h1>
+<p>Early on researchers suggested that the complexity of discrete patterns in a sequence could be measured by measuring the density distribution of the CGR and USM plots and Vinga and Almeida took this a step further in <a class="reference external" href="#3">3</a> by proposing an entropy measure of USM plots that combines the continuous Renyi quadratic entropy with a Parzen kernel density estimate. The method uses a spherical symmetric Gaussian kernel with mean zero and diagonal covariance matrix <span class="math notranslate nohighlight">\(\Sigma = \sigma^2I_d\)</span> where <span class="math notranslate nohighlight">\(I_d\)</span> is the <em>dxd</em> identity matrix. The original paper establishing this measure only tests it for alphabets of size 4 so we must first generalize the equations to alphabets of arbitrary size <em>d</em>. The equation given by Vinga and Almeida for 4-dimensional USM is:
+<a id='Eq1.1'></a>
+$<span class="math notranslate nohighlight">\(
+\begin{equation}
+H_2(USM) = -ln \frac{1}{N^2} \sum_{i=1}^{N} \sum_{j=1}^{N} \frac{1}{16\pi^2\sigma^4}\exp\left(-\frac{1}{4\sigma^2}d_{ij}\right)
+\tag{3.1}
+\end{equation}
+\)</span><span class="math notranslate nohighlight">\(
+where \)</span>d_{ij}<span class="math notranslate nohighlight">\( is the squared Euclidean distance between the USM coordinates \)</span>a_i<span class="math notranslate nohighlight">\( and \)</span>a_j$ <a class="reference external" href="#3">3</a>.</p>
+<p>The next sections introduce the Renyi Continuous Entropy formula, Parzen kernel density formula, and the proof of the Renyi Continuous entropy of <em>d</em>-dimensional USM.</p>
+<p><a id='Section3.1'></a></p>
+<section id="renyi-continuous-entropy">
+<h2>1.1 Renyi Continuous Entropy<a class="headerlink" href="#renyi-continuous-entropy" title="Permalink to this headline">#</a></h2>
+<p>Renyi entropy was instroduced as a generalization of Shannon entropy and includes an order parameter <span class="math notranslate nohighlight">\(\alpha\)</span> which in part, determines the weighted contribution of improbable events to the overall entropy measure. The limit of Renyi entropy <span class="math notranslate nohighlight">\(\lim_{\alpha \to 1}H_{\alpha}(X)\)</span> is Shannon’s original entropy measure. The formula for Renyi entropy of a continous probability density function <span class="math notranslate nohighlight">\(f(x)\)</span> is:
+$<span class="math notranslate nohighlight">\(
+H_{\alpha}(X) = \frac{1}{1-\alpha}\ln\int f^{\alpha}(x)dx
+\)</span>$</p>
+<p>Vinga and Almeida utilize the Renyi quadratic (<span class="math notranslate nohighlight">\(\alpha = 2\)</span>) continuous entropy formula for their USM entropy measure <a class="reference external" href="#3">3</a> which is given here:
+<a id='Eq1.1.1'></a>
+$<span class="math notranslate nohighlight">\(
+\begin{align}
+H_{\alpha}(X) &amp; = \frac{1}{1-2}\ln\int f^{2}(x)dx \\
+&amp; = -\ln\int f^{2}(x)dx
+\end{align}
+\tag{1.1.1}
+\)</span>$</p>
+<p><a id='Section1.2'></a></p>
+</section>
+<section id="parzen-window-kernel-density-estimation">
+<h2>1.2 Parzen Window Kernel Density Estimation<a class="headerlink" href="#parzen-window-kernel-density-estimation" title="Permalink to this headline">#</a></h2>
+<p>Vinga and Almeida employ a Parzen window method to estimate the probability density function fed to the Renyi continuous entropy formula. The Parzen window method takes a linear combination of smooth, continuous, differentiable weighting functions called the kernel function, one centered on each sample point <span class="math notranslate nohighlight">\(a_i\)</span> in the observed sample. The output of this linear combination gives the estimated density function <span class="math notranslate nohighlight">\(\hat{f}(x)\)</span> of the distribution at all values of <span class="math notranslate nohighlight">\(x\)</span>. This is represented by the equation below where <span class="math notranslate nohighlight">\(x\)</span> is the <em>d</em>-dimensional vector valued random variable in <span class="math notranslate nohighlight">\(\mathbf{R}^d\)</span>, <span class="math notranslate nohighlight">\(a = \left\{a_1, a_2, \dots, a_N\right\}\)</span> is the sample of <span class="math notranslate nohighlight">\(x\)</span> of size <span class="math notranslate nohighlight">\(N\)</span>, and <span class="math notranslate nohighlight">\(\kappa()\)</span> is the kernel weighting function applied to the distance between a value in <span class="math notranslate nohighlight">\(x\)</span> and each <span class="math notranslate nohighlight">\(a_i\)</span> in the sample <span class="math notranslate nohighlight">\(a\)</span>:
+$<span class="math notranslate nohighlight">\(
+\hat{f}(x;a) = \frac{1}{N}\sum_{i=1}{N}\kappa(x-a_i)
+\tag{1.2.1}
+\)</span>$</p>
+<p>Vinga and Almeida use the spherical symmetric <em>d</em>-dimensional Gaussian kernel <span class="math notranslate nohighlight">\(g_d\)</span> with a fixed volume defined by the parameter <span class="math notranslate nohighlight">\(\sigma^2\)</span>, the variance of the Gaussian distribution. Recall the general <em>d</em>-dimensional Gaussian distribution with mean <span class="math notranslate nohighlight">\(\mu\)</span> and covariance matrix <span class="math notranslate nohighlight">\(\Sigma\)</span> is defined by the equation:
+$<span class="math notranslate nohighlight">\(
+g_d(x;\mu,\Sigma) = \frac{1}{(2\pi)^{d/2}|\Sigma|^{1/2}}e^{\left(-\frac{1}{2}(x - \mu)^T\Sigma^{-1}(x-\mu)\right)}
+\tag{1.2.2}
+\)</span>$</p>
+<p>where <span class="math notranslate nohighlight">\(x^T\)</span> is the transpose vector of <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(|\Sigma|\)</span> is the determinant of the covariance matrix.</p>
+<p>In the case of the a spherical symmetric Gaussian kernel, the covariance matrix <span class="math notranslate nohighlight">\(\Sigma\)</span> is diagonal and is equivalent to <span class="math notranslate nohighlight">\(\sigma^2I_d\)</span> where <span class="math notranslate nohighlight">\(I_d\)</span> is the <em>dxd</em> identity matrix and <span class="math notranslate nohighlight">\(\sigma^2\)</span> is a fixed arbitrary variance.</p>
+<p>If we substitute <span class="math notranslate nohighlight">\(g_d(x;0, \sigma^2I_d)\)</span> for <span class="math notranslate nohighlight">\(\kappa()\)</span> in the kernel density estimate equation we get:
+<a id='Eq1.2.3'></a>
+$<span class="math notranslate nohighlight">\(
+\begin{align}
+\hat{f}(x;a) &amp; = \frac{1}{N}\sum_{i=1}^{N} g_d(x;0, \sigma^2I_d) \\
+&amp; = \frac{1}{N}\sum_{i=1}^{N}\frac{1}{(2\pi)^{d/2}|\sigma^2I_d|^{1/2}}e^{\left(-\frac{1}{2}(x - a_i)^T(\sigma^2I_d)^{-1}(x-a_i)\right)} \\
+\end{align}
+\tag{1.2.3}
+\)</span>$</p>
+<p><a id='Section1.3'></a></p>
+</section>
+<section id="equation-of-d-dimensional-renyi-entropy-of-usm">
+<h2>1.3 Equation of <em>d</em>-dimensional Renyi Entropy of USM<a class="headerlink" href="#equation-of-d-dimensional-renyi-entropy-of-usm" title="Permalink to this headline">#</a></h2>
+<p>Next we establish the equation for quadratice Renyi entropy of <em>d</em>-dimensional USM.</p>
+<p>We first substitute the kernel density equation with spherical Gaussian kernel (<a class="reference external" href="#Eq1.2.3">Eq. 1.2.3</a>] for <span class="math notranslate nohighlight">\(f(x)\)</span> in the equation for continuous quadratic Renyi entropy (<a class="reference external" href="#Eq1.1.1">Eq. 1.1</a>):
+$<span class="math notranslate nohighlight">\(
+\begin{align}
+H_2(USM) &amp; = -\ln\int\left(\frac{1}{N}\sum_{i=1}^{N}\frac{1}{(2\pi)^{d/2}|\sigma^2I_d|^{1/2}}e^{\left(-\frac{1}{2}(x - a_i)^T(\sigma^2I_d)^{-1}(x-a_i)\right)}\right)^2dx \\
+&amp; = -\ln\int\frac{1}{N^2}\sum_{i=1}^{N}\sum_{j=1}^{N}\left(\frac{1}{(2\pi)^{d/2}|\sigma^2I_d|^{1/2}}e^{\left(-\frac{1}{2}(x - a_i)^T(\sigma^2I_d)^{-1}(x-a_i)\right)}\right)\times \\
+&amp; \qquad \qquad \qquad \qquad \qquad \ \left(\frac{1}{(2\pi)^{d/2}|\sigma^2I_d|^{1/2}}e^{\left(-\frac{1}{2}(x - a_j)^T(\sigma^2I_d)^{-1}(x-a_j)\right)}\right)dx
+\end{align}
+\)</span>$</p>
+<p>Using the constant coefficient rule of integration and the sum rule of integration (the integral of the sums of functions equals the sum of their integrals) we can move the integral operator within the summation operators and we now see that we are taking a convolution of the two Gaussians.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+H_2(USM)  = -\ln\frac{1}{N^2}\sum_{i=1}^{N}\sum_{j=1}^{N}\int &amp; \left(\frac{1}{(2\pi)^{d/2}|\sigma^2I_d|^{1/2}}e^{\left(-\frac{1}{2}(x - a_i)^T(\sigma^2I_d)^{-1}(x-a_i)\right)}\right)\times \\
+&amp; \ \ \ \left(\frac{1}{(2\pi)^{d/2}|\sigma^2I_d|^{1/2}}e^{\left(-\frac{1}{2}(x - a_j)^T(\sigma^2I_d)^{-1}(x-a_j)\right)}\right)dx
+\end{align}
+\end{split}\]</div>
+<p>The convolution of two Gaussians, <span class="math notranslate nohighlight">\(g_d(x;\mu_1, \Sigma_1)\)</span> and <span class="math notranslate nohighlight">\(g_d(x; \mu_2, \Sigma_2)\)</span>, is another Gaussian (proof available in the supplementary material of <a class="reference external" href="#3">3</a>) of the form:</p>
+<div class="math notranslate nohighlight">
+\[
+g_d(x; \mu_1 + \mu_2, \Sigma_1 + \Sigma_2) = \frac{1}{(2\pi)^{d/2}|\Sigma_1 + \Sigma_2|^{1/2}}e^\left(-\frac{1}{2}(\mu_1 - \mu_2)^T(\Sigma_1 + \Sigma_2)^{-1}(\mu_1 - \mu_2)\right)
+\]</div>
+<p>So here we get</p>
+<div class="math notranslate nohighlight">
+\[
+H_2(USM) = -\ln\frac{1}{N^2}\sum_{i=1}^{N}\sum_{j=1}^{N}\frac{1}{(2\pi)^{d/2}|\sigma^2I_d + \sigma^2I_d|^{1/2}}e^{\left(-\frac{1}{2}(a_i - a_j)^T(\sigma^2I_d + \sigma^2I_d)^{-1}(a_i - a_j)\right)}
+\]</div>
+<p>Because we are using a fixed kernel volume approach, <span class="math notranslate nohighlight">\(\sigma^2\)</span> is held constant across all kernels in the equation and so we can further simplify <span class="math notranslate nohighlight">\(\sigma^2I_d + \sigma^2I_d\)</span> to <span class="math notranslate nohighlight">\(2\sigma^2I_d\)</span>. Then the following terms become:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+|2\sigma^2I_d|^{1/2} &amp; = (2^d\sigma^{2d})^{1/2} \\
+&amp; = 2^{d/2}\sigma^d
+\end{align}
+\end{split}\]</div>
+<p>and</p>
+<div class="math notranslate nohighlight">
+\[
+(2\sigma^2I_d)^{-1} = \frac{1}{2\sigma^2}I_d
+\]</div>
+<p>The former due to the fact the determinant of a <em>dxd</em> diagonal matrix is equal to the product of the elements of the principal diagonal which in the case of a scalar matrix, (i.e. <span class="math notranslate nohighlight">\(cI_d\)</span>), is the scalar constant raised to the <em>d<sup>th</sup></em> power, <span class="math notranslate nohighlight">\(|cI_d| = c^d\)</span> <a class="reference external" href="#4">4</a>. The latter due to the fact that the inverse of a diagonal matrix is a diagonal matrix with the reciprocal of the elements of the original matrix as the elements on its principal diagonal, which in this case is <span class="math notranslate nohighlight">\(\frac{1}{2\sigma^2}\)</span>.</p>
+<p>Plugging these two simplified terms into the entropy equation and we can perform further simplifications based on the properties of matrix-vector multiplication involving scalars and the identity matrix <a class="reference external" href="#4">4</a>:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+H_2(USM) &amp; = -\ln\frac{1}{N^2}\sum_{i=1}^{N}\sum_{j=1}^{N}\frac{1}{(2\pi)^{d/2}2^{d/2}\sigma^d}e^{\left(-\frac{1}{2}(a_i - a_j)^T\frac{1}{2\sigma^2}I_d(a_i - a_j)\right)} \\
+&amp; = -\ln\frac{1}{N^2}\sum_{i=1}^{N}\sum_{j=1}^{N}\frac{1}{2^{d/2}\pi^{d/2}2^{d/2}\sigma^d}e^{\left(-\frac{1}{2 \cdot 2\sigma^2}(a_i - a_j)^T(a_i - a_j)\right)} \\
+&amp; = -\ln\frac{1}{N^2}\sum_{i=1}^{N}\sum_{j=1}^{N}\frac{1}{2^{d}\pi^{d/2}\sigma^d}e^{\left(-\frac{1}{4\sigma^2}(a_i - a_j)^T(a_i - a_j)\right)} \\
+&amp; = -\ln\frac{1}{N^2}\sum_{i=1}^{N}\sum_{j=1}^{N}\frac{1}{(2\pi^{1/2}\sigma)^d}e^{\left(-\frac{1}{4\sigma^2}(a_i - a_j)^T(a_i - a_j)\right)}
+\end{align}
+\end{split}\]</div>
+<p>It can be proved that, for <span class="math notranslate nohighlight">\(u\)</span> and <span class="math notranslate nohighlight">\(v\)</span> <em>d</em>-vectors, the product of the vector of the form <span class="math notranslate nohighlight">\((u-v)\)</span> with its transpose <span class="math notranslate nohighlight">\((u-v)^T\)</span> is equivalent to the squared Euclidean distance between <span class="math notranslate nohighlight">\(u\)</span> and <span class="math notranslate nohighlight">\(v\)</span> (proof omitted). Following the notation of <a class="reference external" href="#3">3</a>, let <span class="math notranslate nohighlight">\(d_{ij}\)</span> represent the squared Euclidean distance between <span class="math notranslate nohighlight">\(a_i\)</span> and <span class="math notranslate nohighlight">\(a_j\)</span>, then we rewrite the entropy equation as:
+<a id='Eq1.3.1'></a>
+$<span class="math notranslate nohighlight">\(
+H_2(USM) = -\ln\frac{1}{N^2}\sum_{i=1}^{N}\sum_{j=1}^{N}\frac{1}{(2\pi^{1/2}\sigma)^d}e^{\left(-\frac{1}{4\sigma^2}d_{ij}\right)}
+\tag{1.3.1}
+\)</span>$</p>
+<p>which we can see is congruous with <a class="reference external" href="#Eq1.1">Eq. 1.1</a>.</p>
+<p><a id='Section2'></a></p>
+</section>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="section-2-demo-of-usm-entropy-module">
+<h1>Section 2 Demo of usm_entropy module<a class="headerlink" href="#section-2-demo-of-usm-entropy-module" title="Permalink to this headline">#</a></h1>
+<p><a id='Section2.1'></a></p>
+<section id="simplification-of-entropy-equation-for-python-implementation">
+<h2>2.1 Simplification of Entropy Equation for Python Implementation<a class="headerlink" href="#simplification-of-entropy-equation-for-python-implementation" title="Permalink to this headline">#</a></h2>
+<p>In the implementation of <a class="reference external" href="#Eq1.3.1">Eq. 1.3.1</a> in the function usm_entropy.renyi2usm() we utilize the function pdist() from the module scipy.spatial.distance which calculates the pairwise distance between<br />
+Moving the constants outside of the summation and we can then simplify even further due to the fact that all the pairwise distances of the form <span class="math notranslate nohighlight">\(d_{ii} = 0\)</span> and therefore <span class="math notranslate nohighlight">\(\sum_{\substack{i=j \\ i,j = 1}}^{N}e^{\left(-\frac{1}{4\sigma^2} \cdot \ 0\right)} = N\)</span> and the fact that for the remainder of the pairwise distances, <span class="math notranslate nohighlight">\(d_{ij} = d_{ji}\)</span>, and so the sum of the pairwise distances where <span class="math notranslate nohighlight">\(i \neq j\)</span> can be obtained by <span class="math notranslate nohighlight">\(2 \cdot \sum_{\substack{i&lt;j \\ i,j = 1}}^{N}e^{\left(-\frac{1}{4\sigma^2}d_{ij}\right)}\)</span>.</p>
+<p>Finally we obtain the equation for Renyi entropy of a <em>d</em>-dimensional USM of <em>N</em> sample coordinates where <span class="math notranslate nohighlight">\(d_{ij}\)</span> is the squared Euclidean distance between sample USM coordinates <span class="math notranslate nohighlight">\(a_i\)</span> and <span class="math notranslate nohighlight">\(a_j\)</span>:<br />
+<a id='Eq2.1.1'></a>
+$<span class="math notranslate nohighlight">\(
+H_2(USM) = -\ln\frac{1}{N^2(2\pi^{1/2}\sigma)^d}\times\left[N + 2 \cdot\sum_{\substack{i&lt;j \\ i,j = 1}}^{N}e^{\left(-\frac{1}{4\sigma^2}d_{ij}\right)}\right]
+\tag{2.1.1}
+\)</span>$</p>
+<p><a id='Section2.2'></a></p>
+</section>
+<section id="usm-entropy-renyi2usm">
+<h2>2.2 usm_entropy.renyi2usm()<a class="headerlink" href="#usm-entropy-renyi2usm" title="Permalink to this headline">#</a></h2>
+<p>Equation <a class="reference external" href="#Eq2.1.1">2.1.1</a> is implemented by the function renyi2usm() in the usm_entropy.py module.</p>
+<blockquote>
+<div><p>renyi2usm(cgr_coords, sig2v=SIG2V_DEFAULT, refseq=None, Plot=True, filesave=False, deep_copy=True)</p>
+</div></blockquote>
+<p>The function expects only one set of usm coordinates at a time, either forward or backward. If no values for sig2 then the default sig2 array, equivalent to the ones used in <a class="reference external" href="#3">3</a> will be used. The functions default action is to calculate the renyi entropy values for each value of sig2 in sig2v and store them in a dictionary as sig2:renyi pairs. If Plot is True then the function will also graph the Renyi values by the natural log of the sig2 values. If filesave is True then this plot will be saved as a png.</p>
+<p><a class="reference external" href="#Ex2.2.1">Example 2.2.1</a> shows the output of renyi2usm() for the sequence Es.txt used in <a class="reference external" href="#3">3</a> and compares it to the output from the original matlab code used for <a class="reference external" href="#3">3</a>.</p>
+<div class="cell tag_hide-cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">demo_files</span> <span class="o">=</span> <span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span><span class="o">/</span> <span class="s2">&quot;demo_files&quot;</span>
+<span class="c1">#demo_files</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">demo_files</span><span class="o">/</span><span class="s1">&#39;Es.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fhand</span><span class="p">:</span>
+    <span class="n">seq</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">fhand</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+<span class="n">usm</span> <span class="o">=</span> <span class="n">pyusm</span><span class="o">.</span><span class="n">USM</span><span class="o">.</span><span class="n">make_usm</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span>
+<span class="n">rn2dict</span> <span class="o">=</span> <span class="n">usm_entropy</span><span class="o">.</span><span class="n">renyi2usm</span><span class="p">(</span><span class="n">usm</span><span class="o">.</span><span class="n">fw</span><span class="p">,</span> <span class="n">refseq</span><span class="o">=</span><span class="s1">&#39;Es.txt&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/demo_usm_entropy_15_0.png" src="_images/demo_usm_entropy_15_0.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rn2filepath</span> <span class="o">=</span> <span class="n">demo_files</span> <span class="o">/</span> <span class="s2">&quot;renyi2usm_Es_seq.rn2&quot;</span>
+<span class="n">rn2_matlab_list</span> <span class="o">=</span> <span class="n">parse_rn2_file</span><span class="p">(</span><span class="n">rn2filepath</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sig2_list</span><span class="p">,</span> <span class="n">rn2matlab</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">rn2_matlab_list</span><span class="p">)</span>
+<span class="n">ln_sig2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">sig2_list</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ln_sig2</span><span class="p">,</span> <span class="n">rn2matlab</span><span class="p">,</span> <span class="s1">&#39;bo&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Original Renyi Quadratic Entropy Values for Es.txt N=2000 D=4&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;sig2&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Renyi2 Entropy&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/demo_usm_entropy_17_0.png" src="_images/demo_usm_entropy_17_0.png" />
+</div>
+</div>
+<p><a id='Section3'></a></p>
+</section>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="section-3-asymptotic-behavior-of-renyi-entropy-by-natural-log-of-kernel-variance">
+<h1>Section 3 Asymptotic Behavior of Renyi Entropy by Natural Log of Kernel Variance<a class="headerlink" href="#section-3-asymptotic-behavior-of-renyi-entropy-by-natural-log-of-kernel-variance" title="Permalink to this headline">#</a></h1>
+<p>In the original paper, Vinga and Almeida <a class="reference external" href="#3">3</a> explore the dependence relationship between the entropy measure and the kernel variance, <span class="math notranslate nohighlight">\(\sigma^2\)</span>, with the graph of the function <span class="math notranslate nohighlight">\(H_2 = H_2(ln\sigma^2)\)</span> and prove this graph has two linear asymptotes of the forms <span class="math notranslate nohighlight">\(H_2^+ = \lim_{ln\sigma^2 \to +\infty} H_2(ln\sigma^2) = m ln\sigma^2 + b\)</span> and <span class="math notranslate nohighlight">\(H_2^- = \lim_{ln\sigma^2 \to -\infty} H_2(ln\sigma^2) = m' ln\sigma^2 + b'\)</span>. Below are proofs of the equations of these asymptotes for the d-dimensional USM.</p>
+<p><a id='Section3.1'></a></p>
+<section id="asymptote-for-ln-sigma-2-to-infty">
+<h2>3.1 Asymptote for <span class="math notranslate nohighlight">\(\ln\sigma^2 \to +\infty\)</span><a class="headerlink" href="#asymptote-for-ln-sigma-2-to-infty" title="Permalink to this headline">#</a></h2>
+<p>We solve for the coefficients, <span class="math notranslate nohighlight">\(m\)</span> and <span class="math notranslate nohighlight">\(b\)</span>, of the asymptote for <span class="math notranslate nohighlight">\(ln\sigma^2 \to +\infty\)</span> using the equations given by Vinga and Almeida <a class="reference external" href="#3">3</a> <span class="math notranslate nohighlight">\(m = \lim_{\sigma^2 \to +\infty} \frac{H_2(\sigma^2)}{\ln\sigma^2}\)</span> and <span class="math notranslate nohighlight">\(b = \lim_{\sigma^2 \to +\infty} (H_2(\sigma^2) - m \ln \sigma^2)\)</span>.</p>
+<p>We begin with <span class="math notranslate nohighlight">\(m\)</span> and substitute <a class="reference external" href="#Eq1.3.1">Eq. 1.3.1</a> for <span class="math notranslate nohighlight">\(H_2(\sigma^2)\)</span> in the formula. We then simplify the equation by distributing the exponent <em>d</em> in the numerator, splitting the numerator into a sum of three log terms per the product rule, then distributing the negative term across the summation, and transforming the negative log of the fractions into the log of the reciprocals per the rule of cologarithms.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+m &amp; = \lim_{\sigma^2 \to +\infty} \frac{-\ln\frac{1}{N^2}\sum_{i=1}^{N}\sum_{j=1}^{N}\frac{1}{(2\pi^{1/2}\sigma)^d}e^{\left(-\frac{1}{4\sigma^2}d_{ij}\right)}}{\ln\sigma^2} \\
+&amp; = \lim_{\sigma^2 \to +\infty} \frac{-\ln\frac{1}{N^22^d\pi^{d/2}\sigma^d}\sum_{i=1}^{N}\sum_{j=1}^{N}e^{\left(-\frac{1}{4\sigma^2}d_{ij}\right)}}{\ln\sigma^2} \\
+&amp; = \lim_{\sigma^2 \to +\infty} \frac{-\ln\frac{1}{N^22^d\pi^{d/2}} -\ln\frac{1}{\sigma^d} - \ln\sum_{i=1}^{N}\sum_{j=1}^{N}e^{\left(-\frac{1}{4\sigma^2}d_{ij}\right)}}{\ln\sigma^2} \\
+&amp; = \lim_{\sigma^2 \to +\infty} \frac{\ln(N^22^d\pi^{d/2}) + \ln\sigma^d - \ln\sum_{i=1}^{N}\sum_{j=1}^{N}e^{\left(-\frac{1}{4\sigma^2}d_{ij}\right)}}{\ln\sigma^2} \\
+\end{align}
+\end{split}\]</div>
+<p>From there we can split the larger fraction into a sum of three fractions with common denominator <span class="math notranslate nohighlight">\(\ln\sigma^2\)</span> and by dealing with each individually we get,
+<a id='Eq3.1.1'></a>
+$<span class="math notranslate nohighlight">\(
+\begin{align}
+m &amp; = \lim_{\sigma^2 \to +\infty} \frac{\ln(N^22^d\pi^{d/2})}{\ln\sigma^2} + \frac{\ln\sigma^d}{\ln\sigma^2} - \frac{\ln\sum_{i=1}^{N}\sum_{j=1}^{N}e^{\left(-\frac{1}{4\sigma^2}d_{ij}\right)}}{\ln\sigma^2} \\
+&amp; = \frac{d\ln\sigma}{2\ln\sigma} - \lim_{\sigma^2 \to +\infty} \frac{\ln\sum_{i=1}^{N}\sum_{j=1}^{N}e^{\left(-\frac{1}{4\sigma^2}d_{ij}\right)}}{\ln\sigma^2} \\
+&amp; =  \frac{d}{2} - \lim_{\sigma^2 \to +\infty}\frac{\ln N^2}{\ln\sigma^2} \\
+&amp; =  \frac{d}{2} 
+\end{align}
+\tag{3.1.1}
+\)</span>$</p>
+<p>since the limit of the first fraction as <span class="math notranslate nohighlight">\(\sigma^2 \to +\infty\)</span> is 0, as the numerator remains constant while the denominator grows infinitely. The second fraction is simplified to <span class="math notranslate nohighlight">\(d/2\)</span> per the power rule and becomes a constant independent of <span class="math notranslate nohighlight">\(\sigma^2\)</span>. The limit of the final fraction is also 0 since <span class="math notranslate nohighlight">\(\lim_{\sigma^2 \to +\infty} e^{\left(-\frac{1}{4\sigma^2}d_{ij}\right)} = 1\)</span> and <span class="math notranslate nohighlight">\(\sum_{i=1}^{N}\sum_{j=1}^{N}1 = N^2\)</span>, making the numerator independent of <span class="math notranslate nohighlight">\(\sigma^2\)</span> while the denominator tends toward infinity.</p>
+<p>And doing the same for <span class="math notranslate nohighlight">\(b\)</span> we get
+<a id='Eq3.1.2'></a>
+$<span class="math notranslate nohighlight">\(
+\begin{align}
+b &amp;= \lim_{\sigma^2 \to +\infty} -\ln\frac{1}{N^22^d\pi^{d/2}\sigma^d}\sum_{i=1}^{N}\sum_{j=1}^{N}e^{\left(-\frac{1}{4\sigma^2}d_{ij}\right)} - \frac{d}{2}\ln\sigma^2 \\
+&amp;= \lim_{\sigma^2 \to +\infty} -1\left(\ln\frac{1}{N^22^d\pi^{d/2}\sigma^d}\sum_{i=1}^{N}\sum_{j=1}^{N}e^{\left(-\frac{1}{4\sigma^2}d_{ij}\right)} + \ln\sigma^d\right)\\
+&amp;= \lim_{\sigma^2 \to +\infty} -1\left(\ln\frac{\sigma^d}{N^22^d\pi^{d/2}\sigma^d}\sum_{i=1}^{N}\sum_{j=1}^{N}e^{\left(-\frac{1}{4\sigma^2}d_{ij}\right)}\right)\\
+&amp;= \lim_{\sigma^2 \to +\infty} -1\left(\ln\frac{\sigma^d}{2^d\pi^{d/2}\sigma^d} + \ln\frac{1}{N^2}\sum_{i=1}^{N}\sum_{j=1}^{N}e^{\left(-\frac{1}{4\sigma^2}d_{ij}\right)}\right)\\
+&amp;= -\ln\frac{1}{2^d\pi^{d/2}} - \lim_{\sigma^2 \to +\infty} \ln\frac{1}{N^2}\sum_{i=1}^{N}\sum_{j=1}^{N}e^{\left(-\frac{1}{4\sigma^2}d_{ij}\right)} \\
+&amp;= \ln2^d\pi^{d/2} - \ln\frac{N^2}{N^2} \\
+&amp;= \ln(2\pi^{1/2})^d \\
+\end{align}
+\tag{3.1.2}
+\)</span>$</p>
+<p>since the <span class="math notranslate nohighlight">\(\lim_{\sigma^2 \to +\infty} e^{\left(-\frac{1}{4\sigma^2}d_{ij}\right)} = 1\)</span>, <span class="math notranslate nohighlight">\(\sum_{i=1}^{N}\sum_{j=1}^{N}1 = N^2\)</span>, and <span class="math notranslate nohighlight">\(\ln(1)=0\)</span>.</p>
+<p>Therefore we determine the equation of the linear asymptote of <span class="math notranslate nohighlight">\(H_2 =  H_2(ln\sigma^2)\)</span> as <span class="math notranslate nohighlight">\(\ln\sigma^2 \to +\infty\)</span> as
+<a id='Eq3.1.3'></a>
+$<span class="math notranslate nohighlight">\(
+\begin{align}
+H_2^+ &amp; = \frac{d}{2}\ln\sigma^2 + \ln(2\pi^{\frac{1}{2}})^d \\
+&amp; = d\ln\sigma + d\ln2\pi^{\frac{1}{2}} \\
+&amp; = d\left(\ln\sigma + \ln2\pi^{\frac{1}{2}}\right) \\
+&amp; = d\ln\sigma2\pi^{\frac{1}{2}} \\
+&amp; = \ln\left(2\sigma\pi^{\frac{1}{2}}\right)^d \\
+\end{align}
+\tag{3.1.3}
+\)</span>$</p>
+<p>This positive asymptote equation is computed by the function usm_entropy.positive_asymptote() which takes the dimension of the USM as its first positional argument and computes x and y values of the asymptote for the module default sig2 values.</p>
+<p><a id='Section3.2'></a></p>
+</section>
+<section id="asymptote-for-ln-sigma-2-to-0">
+<h2>3.2 Asymptote for <span class="math notranslate nohighlight">\(\ln\sigma^2 \to 0^+\)</span><a class="headerlink" href="#asymptote-for-ln-sigma-2-to-0" title="Permalink to this headline">#</a></h2>
+<p>Because <span class="math notranslate nohighlight">\(H_2 = H_2(ln\sigma^2)\)</span> is a logarithmic equation it is undefined for <span class="math notranslate nohighlight">\(\sigma^2 &lt; 0\)</span>. Therefore we do not have to worry about the <span class="math notranslate nohighlight">\(\lim_{\sigma^2 \to -\infty}\)</span> of the equation but only need to solve for <span class="math notranslate nohighlight">\(\lim_{\sigma^2 \to 0^+}\)</span>.</p>
+<p>We solve for the coefficients, <span class="math notranslate nohighlight">\(m'\)</span> and <span class="math notranslate nohighlight">\(b'\)</span>, of the asymptote equation <span class="math notranslate nohighlight">\(H_2^- = \lim_{ln\sigma^2 \to 0^+} H_2(ln\sigma^2) = m' ln\sigma^2 + b'\)</span> using the equations given by Vinga and Almeida <a class="reference external" href="#3">3</a> <span class="math notranslate nohighlight">\(m' = \lim_{\sigma^2 \to 0^+} \frac{H_2(\sigma^2)}{\ln\sigma^2}\)</span> and <span class="math notranslate nohighlight">\(b' = \lim_{\sigma^2 \to 0^+} (H_2(\sigma^2) - m' \ln \sigma^2)\)</span>.</p>
+<p>For <span class="math notranslate nohighlight">\(m'\)</span> we begin the same way as for <span class="math notranslate nohighlight">\(m\)</span>, except using the simplified entropy equation <a class="reference external" href="#Eq2.1.1">Eq. 2.1.1</a> an alternate form of <a class="reference external" href="#Eq1.3.1">Eq. 1.3.1</a> which we derived in <a class="reference external" href="#Section2.1">Section 2.1</a>. We then apply the same simplifications applied in the derivation of <a class="reference external" href="#Eq3.1.1">Eq. 3.1.1</a> and the fact that <span class="math notranslate nohighlight">\(\lim_{x \to 0^+}\ln(x) = -\infty\)</span> and proceed,
+<a id='Eq3.2.1'></a>
+$<span class="math notranslate nohighlight">\(
+\begin{align}
+m' &amp; = \lim_{\sigma^2 \to 0^+} \frac{-\ln\frac{1}{N^2(2\pi^{1/2}\sigma)^d}\times\left[N + 2 \cdot\sum_{\substack{i&lt;j \\ i,j = 1}}^{N}e^{\left(-\frac{1}{4\sigma^2}d_{ij}\right)}\right]}{\ln\sigma^2} \\
+&amp; = \frac{d}{2} + \lim_{\sigma^2 \to 0^+} \frac{\ln(N^22^d\pi^{d/2})}{\ln\sigma^2} - \frac{\left[N + 2 \cdot\sum_{\substack{i&lt;j \\ i,j = 1}}^{N}e^{\left(-\frac{1}{4\sigma^2}d_{ij}\right)}\right]}{\ln\sigma^2} \\
+&amp; = \frac{d}{2} - \lim_{\sigma^2 \to 0^+} \frac{N}{\ln\sigma^2} \\
+&amp; = \frac{d}{2} \\
+\end{align}
+\tag{3.2.1}
+\)</span>$</p>
+<p>since <span class="math notranslate nohighlight">\(\frac{\ln(N^22^d\pi^{d/2})}{\ln\sigma^2}\)</span> will tend toward <span class="math notranslate nohighlight">\(-0\)</span> as <span class="math notranslate nohighlight">\(\sigma^2 \to 0^+\)</span> and  <span class="math notranslate nohighlight">\(\lim_{\sigma^2 \to 0^+} \sum_{\substack{i&lt;j \\ i,j = 1}}^{N}e^{\left(-\frac{1}{4\sigma^2}d_{ij}\right)} = 0\)</span> since <span class="math notranslate nohighlight">\(\lim_{\sigma^2 \to 0^+} -\frac{1}{4\sigma^2}d_{ij} = -\infty\)</span>.</p>
+<p>For <span class="math notranslate nohighlight">\(b'\)</span> we follow the same procedure using <a class="reference external" href="#Eq2.1.1">Eq. 2.1.1</a> and the simplifications applied for <a class="reference external" href="#Eq3.1.2">Eq. 3.1.2</a>:
+<a id='Eq3.2.2'></a>
+$<span class="math notranslate nohighlight">\(
+\begin{align}
+b' &amp; = \lim_{\sigma^2 \to 0^+} -\ln\frac{1}{N^2\left(2\pi^{1/2}\sigma\right)^d}\times\left[N + 2 \cdot\sum_{\substack{i&lt;j \\ i,j = 1}}^{N}e^{\left(-\frac{1}{4\sigma^2}d_{ij}\right)}\right] - \frac{d}{2}\ln\sigma^2 \\
+&amp; = -\ln\frac{1}{2^d\pi^{d/2}} - \lim_{\sigma^2 \to 0^+} \ln\frac{1}{N^2}\left[N + 2 \cdot\sum_{\substack{i&lt;j \\ i,j = 1}}^{N}e^{\left(-\frac{1}{4\sigma^2}d_{ij}\right)}\right] \\
+&amp; = -\ln\frac{1}{2^d\pi^{d/2}} - \ln\frac{N}{N^2} \\
+&amp; = \ln\left(2\pi^{1/2}\right)^d + \ln\frac{N^2}{N} \\
+&amp; = d\ln2\pi^{1/2} + \ln N \\
+\end{align}
+\tag{3.2.2}
+\)</span>$</p>
+<p>Therefore we determine the equation of the linear asymptote of <span class="math notranslate nohighlight">\(H_2 =  H_2(ln\sigma^2)\)</span> as <span class="math notranslate nohighlight">\(\ln\sigma^2 \to 0^+\)</span> as
+<a id='Eq3.2.3'></a>
+$<span class="math notranslate nohighlight">\(
+\begin{align}
+H_2^- &amp; = \frac{d}{2}\ln\sigma^2 + d\ln2\pi^{1/2} + \ln N \\
+&amp; = d\ln\sigma + d\ln2\pi^{1/2} + \ln N \\
+&amp; = d\left(\ln\sigma + \ln2\pi^{1/2}\right) + \ln N \\
+&amp; = d\left(\ln\sigma2\pi^{1/2}\right) + \ln N \\
+&amp; = \ln\left(\sigma2\pi^{1/2}\right)^d + \ln N \\
+&amp; = \ln N\left(2\sigma\pi^{1/2}\right)^d \\
+\end{align}
+\tag{3.2.3}
+\)</span>$</p>
+<p>This negative asymptote equation is computed by the function usm_entropy.negative_asymptote() which takes the dimension of the USM as its first positional argument, the number of coords in the USM as its second positional argument, and computes x and y values of the asymptote for the module default sig2 values.</p>
+<p>We can check the validity of these asymptote equations by substituting <span class="math notranslate nohighlight">\(d = 4\)</span> we obtain the asymptote equations derived in <a class="reference external" href="#3">3</a>.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+H_2^+ &amp; = \ln\left(2\sigma\pi^{\frac{1}{2}}\right)^4  \\
+&amp; = \ln2^4\sigma^4\left(\pi^{\frac{1}{2}}\right)^4  \\
+2\ln\sigma^2 + \ln16\pi^2 &amp; = \ln16\sigma^4\pi^{2}  \\
+\end{align}
+\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+H_2^- &amp; = \ln N\left(2\sigma\pi^{1/2}\right)^4 \\
+2\ln\sigma^2 + \ln16\pi^2 + \ln N &amp; = \ln 16N\sigma^4\pi^{2} \\
+\end{align}
+\end{split}\]</div>
+<p>Where the left side of the equations are the corresponding graph asymptote equations in <a class="reference external" href="#3">3</a>.</p>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this headline">#</a></h2>
+<p><a id='1'></a></p>
+<div class="csl-entry">[1] Jeffrey, H. J. (1990). Chaos game representation of gene structure. <i>Nucleic Acids Research</i>, <i>18</i>(8), 2163–2170. https://doi.org/10.1093/nar/18.8.2163</div>
+<a id='2'></a>
+<div class="csl-entry">[2] Almeida, J. S., &#38; Vinga, S. (2002). Universal sequence map (USM) of arbitrary discrete sequences. <i>BMC Bioinformatics</i>, <i>3</i>. https://doi.org/10.1186/1471-2105-3-6</div>
+<a id='3'></a>
+<div class="csl-entry">[3] Vinga, S., &#38; Almeida, J. S. (2004). Rényi continuous entropy of DNA sequences. <i>Journal of Theoretical Biology</i>, <i>231</i>(3), 377–388. https://doi.org/10.1016/j.jtbi.2004.06.030</div>
+<a id='4'></a>
+<div class="csl-entry">[4] David C. Lay, Steven R. Lay, &#38; Judi J. McDonald. (2021). <i>Linear Algebra and Its Applications</i> (6th Edition). Pearson Education, Inc.</div></section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "monte-carlo-dev"
+        },
+        kernelOptions: {
+            kernelName: "monte-carlo-dev",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'monte-carlo-dev'</script>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="demo_usm.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Demo of Universal Sequence Maps (USM) in Python</p>
+        </div>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By Katherine Wuestney<br/>
+  
+      &copy; Copyright 2022.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>

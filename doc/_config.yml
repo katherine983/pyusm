@@ -3,7 +3,7 @@ title: Documentation of pyusm Package
 author: Katherine Wuestney
 only_build_toc_files: true
 execute:
-  execute_notebooks: cache
+  execute_notebooks: force
 
 repository:
   url: https://github.com/katherine983/pyusm
