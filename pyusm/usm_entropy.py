@@ -153,7 +153,7 @@ def positive_asymptote(d, sig2v=SIG2V_DEFAULT):
     of Renyi vs. ln sig2 as lnsig2 approaches positive infinity. This is the
     graph plotted by renyi2usm().
 
-    See proof in doc/demo_usm_entropy.
+    See proof in doc/demo_usm_entropy.ipynb
 
     Parameters
     ----------
