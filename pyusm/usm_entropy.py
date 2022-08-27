@@ -114,7 +114,7 @@ def renyi2usm(cgr_coords, sig2v=SIG2V_DEFAULT, refseq=None, Plot=True, filesave=
     """
     sig2v = np.array(sig2v, dtype=np.float64)
     if deep_copy is True:
-        #convert cgr is ndarray
+        #convert cgr to ndarray
         cgr=copy.deepcopy(cgr_coords)
         cgr = np.asarray(cgr)
     else:

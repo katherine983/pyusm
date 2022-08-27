@@ -1,0 +1,18 @@
+# In _config.yml
+title: Documentation of pyusm Package
+author: Katherine Wuestney
+only_build_toc_files: true
+execute:
+  execute_notebooks: cache
+
+repository:
+  url: https://github.com/katherine983/pyusm
+  path_to_book: doc  # An optional path to your book, defaults to repo root
+  branch: main # An optional branch, defaults to `master`
+html:
+  use_repository_button: true
+  use_edit_page_button: true
+sphinx:
+  config:
+    execution_show_tb: True
+

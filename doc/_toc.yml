@@ -1,0 +1,7 @@
+# In _toc.yml
+format: jb-book
+root: intro
+chapters:
+- file: use
+- file: demo_usm
+- file: demo_usm_entropy
