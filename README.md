@@ -1,6 +1,9 @@
 # pyusm
 Python package implementing and expanding on the universal sequence mapping tools created by S. Vinga and J. Almeida and referenced in [1](#1) [2](#2) [3](#3). 
 
+For in-depth explanation of the package functions including theoretical background and proofs, visit <https://katherine983.github.io/pyusm/intro.html>
+
+
 Examples:
 ```python
 import pyusm
@@ -18,8 +21,6 @@ from pyusm import usm_entropy
 #computes the quadratic renyi entropy values from the forward USM map coordinates in datausm.fw
 rn2dict = usm_entropy.renyi2usm(datausm.fw)
 ```
-See the notebook files in ./doc folder for in depth descriptions of the package modules and their theoretical underpinnings.
-
 
 #### Bibliography
 <a class="id">1</a>
