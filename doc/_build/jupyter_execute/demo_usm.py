@@ -166,6 +166,8 @@ tenrolls = FuncAnimation(fig, animation, frames=range(1, 10), init_func=init_fra
 HTML(tenrolls.to_jshtml())
 
 
+# *Click the <i class="fa fa-play"></i> button to start plot animation*
+
 #     5. Continue step 4 over a few hundred to a few thousand iterations and observe the pattern that arises. 
 
 # In[7]:
