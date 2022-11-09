@@ -4,7 +4,11 @@ Created on Thu May 14 13:14:53 2020
 
 @author: wuest
 
-packages: scipy1.8.1, matplotlib
+Module implementing Renyi Entropy computation from Universal Sequence Maps
+with Parzen Kernel Estimator as introduced in the paper by Vinga and Almeida [1].
+
+[1] S. Vinga and J. S. Almeida, “Rényi continuous entropy of DNA sequences,” Journal of Theoretical Biology, vol. 231, no. 3, pp. 377–388, 2004, doi: 10.1016/j.jtbi.2004.06.030.
+
 """
 
 import numpy as np
@@ -83,7 +87,7 @@ def renyi4d(cgr, sig2v=SIG2V_DEFAULT, refseq=None, filesave=False):
 
     return r2usm_dict
 
-def renyi2usm(cgr_coords, sig2v=SIG2V_DEFAULT, refseq=None, Plot=True, filesave=False, deep_copy=True):
+def renyi2usm(cgr_coords, sig2v=SIG2V_DEFAULT, refseq=None, Plot=False, filesave=False, deep_copy=False):
     """
     Calculates Renyi quadratic entropy of a set of USM forward coordinates
 
@@ -100,12 +104,12 @@ def renyi2usm(cgr_coords, sig2v=SIG2V_DEFAULT, refseq=None, Plot=True, filesave=
     Plot : BOOLEAN, optional
         OPTION TO PLOT ENTROPY VALUES AS A FUNCTION OF THE LOG OF THE KERNEL
         VARIANCES, SIG2V. ENTROPY VALUES ON THE Y AXIS AND LN(SIG2) VALUES
-        ON THE X AXIS.
+        ON THE X AXIS. The default is False.
     filesave : BOOLEAN, optional
         OPTION TO SAVE RESULTS TO FILE. The default is False.
     deep_copy : BOOLEAN, optional
-        IF TRUE (DEFAULT) WILL USE A DEEP COPY OF cgr_coords TO CALCULATE THE
-        ENTROPY VALUES.
+        IF TRUE, WILL USE A DEEP COPY OF cgr_coords TO CALCULATE THE
+        ENTROPY VALUES. The default is False.
 
     Returns
     -------
