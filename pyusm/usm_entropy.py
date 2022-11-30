@@ -17,8 +17,7 @@ import matplotlib.pyplot as plt
 import datetime
 import pathlib
 import copy
-#from Bio import Seq
-#from Bio import SeqRecord
+
 
 # set the default variance vector to use with Gaussian density kernels
 SIG2V_DEFAULT = ('1.000000e-10', '1.778279e-10', '3.162278e-10', '5.623413e-10',
