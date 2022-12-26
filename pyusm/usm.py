@@ -168,8 +168,10 @@ class USM:
                 f.append(u)
                 b.append(v)
         #print(c)
-        fl = [arr.tolist() for arr in f]
-        bl = [arr.tolist() for arr in b]
+        #fl = [arr.tolist() for arr in f]
+        fl = np.asarray(f)
+        #bl = [arr.tolist() for arr in b]
+        bl = np.asarray(b)
         USM=cls(forward=fl[1:], backward=bl[1:], coord_dict=coord_dict, form='USM')
         #vert_coords=list(map(tuple, np.identity(d)))
         #USM.coord_dictMake(A,vert_coords)
