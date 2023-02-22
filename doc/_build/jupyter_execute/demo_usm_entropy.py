@@ -32,7 +32,7 @@ from pyusm.tests.test_usm_entropy import parse_rn2_file as parse_rn2_file
 # <a id='Intro'></a>
 # ## Intro and review
 # 
-# Universal Sequence Maps (USM) [1](#1) are a generalized version of the CGR maps first introduced by Jeffrey [2](#2) and they function as generalized order-free Markov transition matrices of symbolic sequences. This property in particular, allows for us to compute a generalized entropy estimate of the sequence based on the density of USM coordinates themselves. For more background on USM see the notebook demonstration ['demo_usm_make' ](#link to github url). Vinga and Almeida  introduced a continuous quadratic Renyi entropy of the USM of DNA sequences in [3](#3) which demonstrated promising discriminatory power. We build off of their work by implementing their algorithms in python and generalizing their entropy measure to *d*-dimensional USM. Proofs of the generalized equations are included in the sections below. In many aspects the usm_entropy module uses the original javascript and matlab toolkit (found at the github repository [usm.github.com](https://github.com/usm/usm.github.com.git)) as a template, however, we make notable deviations from the original algorithms in order to implement the generalized equations and to be more pythonic. 
+# Universal Sequence Maps (USM) [1](#1) are a generalized version of the CGR maps first introduced by Jeffrey [2](#2) and they function as generalized order-free Markov transition matrices of symbolic sequences. This property in particular, allows for us to compute a generalized entropy estimate of the sequence based on the density of USM coordinates themselves. For more background on USM see the notebook demonstration ['demo_usm_make' ](demo_usm.ipynb). Vinga and Almeida  introduced a continuous quadratic Renyi entropy of the USM of DNA sequences in [3](#3) which demonstrated promising discriminatory power. We build off of their work by implementing their algorithms in python and generalizing their entropy measure to *d*-dimensional USM. Proofs of the generalized equations are included in the sections below. In many aspects the usm_entropy module uses the original javascript and matlab toolkit (found at the github repository [usm.github.com](https://github.com/usm/usm.github.com.git)) as a template, however, we make notable deviations from the original algorithms in order to implement the generalized equations and to be more pythonic. 
 
 # <a id='termintro'></a>
 # ## Terminology Introduction - Use this section as a glossary
@@ -58,28 +58,33 @@ from pyusm.tests.test_usm_entropy import parse_rn2_file as parse_rn2_file
 # $$
 # \begin{equation}
 # H_2(USM) = -ln \frac{1}{N^2} \sum_{i=1}^{N} \sum_{j=1}^{N} \frac{1}{16\pi^2\sigma^4}\exp\left(-\frac{1}{4\sigma^2}d_{ij}\right)
-# \tag{3.1}
+# \tag{1.1}
 # \end{equation}
 # $$
+# 
 # where $d_{ij}$ is the squared Euclidean distance between the USM coordinates $a_i$ and $a_j$ [3](#3).
 # 
 # The next sections introduce the Renyi Continuous Entropy formula, Parzen kernel density formula, and the proof of the Renyi Continuous entropy of *d*-dimensional USM. 
 
-# <a id='Section3.1'></a>
+# <a id='Section1.1'></a>
 # ### 1.1 Renyi Continuous Entropy
 # Renyi entropy was instroduced as a generalization of Shannon entropy and includes an order parameter $\alpha$ which in part, determines the weighted contribution of improbable events to the overall entropy measure. The limit of Renyi entropy $\lim_{\alpha \to 1}H_{\alpha}(X)$ is Shannon's original entropy measure. The formula for Renyi entropy of a continous probability density function $f(x)$ is:
+# 
 # $$
+# \begin{equation}
 # H_{\alpha}(X) = \frac{1}{1-\alpha}\ln\int f^{\alpha}(x)dx
+# \end{equation}
 # $$
 # 
 # Vinga and Almeida utilize the Renyi quadratic ($\alpha = 2$) continuous entropy formula for their USM entropy measure [3](#3) which is given here:
 # <a id='Eq1.1.1'></a>
+# 
 # $$
 # \begin{align}
 # H_{\alpha}(X) & = \frac{1}{1-2}\ln\int f^{2}(x)dx \\
 # & = -\ln\int f^{2}(x)dx
-# \end{align}
 # \tag{1.1.1}
+# \end{align}
 # $$
 
 # It is worth note that the statistic Sample Entropy which is based on the correlation integral by Grassberger and Procaccia functions as an estimate of the quadratic Renyi entropy since the correlation integral is also an estimate of quadratic Renyi entropy.
@@ -88,14 +93,18 @@ from pyusm.tests.test_usm_entropy import parse_rn2_file as parse_rn2_file
 # ### 1.2 Parzen Window Kernel Density Estimation
 # Vinga and Almeida employ a Parzen window method to estimate the probability density function fed to the Renyi continuous entropy formula. The Parzen window method takes a linear combination of smooth, continuous, differentiable weighting functions called the kernel function, one centered on each sample point $a_i$ in the observed sample. The output of this linear combination gives the estimated density function $\hat{f}(x)$ of the distribution at all values of $x$. This is represented by the equation below where $x$ is the *d*-dimensional vector valued random variable in $\mathbf{R}^d$, $a = \left\{a_1, a_2, \dots, a_N\right\}$ is the sample of $x$ of size $N$, and $\kappa()$ is the kernel weighting function applied to the distance between a value in $x$ and each $a_i$ in the sample $a$:
 # $$
+# \begin{equation}
 # \hat{f}(x;a) = \frac{1}{N}\sum_{i=1}{N}\kappa(x-a_i)
 # \tag{1.2.1}
+# \end{equation}
 # $$
 # 
 # Vinga and Almeida use the spherical symmetric *d*-dimensional Gaussian kernel $g_d$ with a fixed volume defined by the parameter $\sigma^2$, the variance of the Gaussian distribution. Recall the general *d*-dimensional Gaussian distribution with mean $\mu$ and covariance matrix $\Sigma$ is defined by the equation:
 # $$
+# \begin{equation}
 # g_d(x;\mu,\Sigma) = \frac{1}{(2\pi)^{d/2}|\Sigma|^{1/2}}e^{\left(-\frac{1}{2}(x - \mu)^T\Sigma^{-1}(x-\mu)\right)}
 # \tag{1.2.2}
+# \end{equation}
 # $$
 # 
 # where $x^T$ is the transpose vector of $x$ and $|\Sigma|$ is the determinant of the covariance matrix. 
@@ -116,7 +125,7 @@ from pyusm.tests.test_usm_entropy import parse_rn2_file as parse_rn2_file
 # ### 1.3 Equation of *d*-dimensional Renyi Entropy of USM
 # Next we establish the equation for quadratice Renyi entropy of *d*-dimensional USM.
 # 
-# We first substitute the kernel density equation with spherical Gaussian kernel ([Eq. 1.2.3](#Eq1.2.3)] for $f(x)$ in the equation for continuous quadratic Renyi entropy ([Eq. 1.1](#Eq1.1.1)):
+# We first substitute the kernel density equation with spherical Gaussian kernel ([Eq. 1.2.3](#Eq1.2.3)] for $f(x)$ in the equation for continuous quadratic Renyi entropy ([Eq. 1.1](#Eq1.1)):
 # $$
 # \begin{align}
 # H_2(USM) & = -\ln\int\left(\frac{1}{N}\sum_{i=1}^{N}\frac{1}{(2\pi)^{d/2}|\sigma^2I_d|^{1/2}}e^{\left(-\frac{1}{2}(x - a_i)^T(\sigma^2I_d)^{-1}(x-a_i)\right)}\right)^2dx \\
@@ -177,8 +186,10 @@ from pyusm.tests.test_usm_entropy import parse_rn2_file as parse_rn2_file
 # It can be proved that, for $u$ and $v$ *d*-vectors, the product of the vector of the form $(u-v)$ with its transpose $(u-v)^T$ is equivalent to the squared Euclidean distance between $u$ and $v$ (proof omitted). Following the notation of [3](#3), let $d_{ij}$ represent the squared Euclidean distance between $a_i$ and $a_j$, then we rewrite the entropy equation as:
 # <a id='Eq1.3.1'></a>
 # $$
+# \begin{equation}
 # H_2(USM) = -\ln\frac{1}{N^2}\sum_{i=1}^{N}\sum_{j=1}^{N}\frac{1}{(2\pi^{1/2}\sigma)^d}e^{\left(-\frac{1}{4\sigma^2}d_{ij}\right)}
 # \tag{1.3.1}
+# \end{equation}
 # $$
 # 
 # which we can see is congruous with [Eq. 1.1](#Eq1.1).  
@@ -200,8 +211,10 @@ from pyusm.tests.test_usm_entropy import parse_rn2_file as parse_rn2_file
 # Finally we obtain the equation for Renyi entropy of a *d*-dimensional USM of *N* sample coordinates where $d_{ij}$ is the squared Euclidean distance between sample USM coordinates $a_i$ and $a_j$:  
 # <a id='Eq2.1.1'></a>
 # $$
+# \begin{equation}
 # H_2(USM) = -\ln\frac{1}{N^2(2\pi^{1/2}\sigma)^d}\times\left[N + 2 \cdot\sum_{\substack{i<j \\ i,j = 1}}^{N}e^{\left(-\frac{1}{4\sigma^2}d_{ij}\right)}\right]
 # \tag{2.1.1}
+# \end{equation}
 # $$
 # 
 
@@ -220,6 +233,9 @@ from pyusm.tests.test_usm_entropy import parse_rn2_file as parse_rn2_file
 demo_files = Path.cwd()/ "demo_files"
 #demo_files
 
+
+# <a id='Ex2.2.1'></a>
+# #### Example 2.2.1
 
 # In[3]:
 
@@ -269,14 +285,15 @@ plt.show()
 # $$
 # From there we can split the larger fraction into a sum of three fractions with common denominator $\ln\sigma^2$ and by dealing with each individually we get,
 # <a id='Eq3.1.1'></a>
+# 
 # $$
 # \begin{align}
 # m & = \lim_{\sigma^2 \to +\infty} \frac{\ln(N^22^d\pi^{d/2})}{\ln\sigma^2} + \frac{\ln\sigma^d}{\ln\sigma^2} - \frac{\ln\sum_{i=1}^{N}\sum_{j=1}^{N}e^{\left(-\frac{1}{4\sigma^2}d_{ij}\right)}}{\ln\sigma^2} \\
 # & = \frac{d\ln\sigma}{2\ln\sigma} - \lim_{\sigma^2 \to +\infty} \frac{\ln\sum_{i=1}^{N}\sum_{j=1}^{N}e^{\left(-\frac{1}{4\sigma^2}d_{ij}\right)}}{\ln\sigma^2} \\
 # & =  \frac{d}{2} - \lim_{\sigma^2 \to +\infty}\frac{\ln N^2}{\ln\sigma^2} \\
-# & =  \frac{d}{2} 
-# \end{align}
+# & =  \frac{d}{2}
 # \tag{3.1.1}
+# \end{align}
 # $$
 # 
 # since the limit of the first fraction as $\sigma^2 \to +\infty$ is 0, as the numerator remains constant while the denominator grows infinitely. The second fraction is simplified to $d/2$ per the power rule and becomes a constant independent of $\sigma^2$. The limit of the final fraction is also 0 since $\lim_{\sigma^2 \to +\infty} e^{\left(-\frac{1}{4\sigma^2}d_{ij}\right)} = 1$ and $\sum_{i=1}^{N}\sum_{j=1}^{N}1 = N^2$, making the numerator independent of $\sigma^2$ while the denominator tends toward infinity.
@@ -284,6 +301,7 @@ plt.show()
 # 
 # And doing the same for $b$ we get 
 # <a id='Eq3.1.2'></a>
+# 
 # $$
 # \begin{align}
 # b &= \lim_{\sigma^2 \to +\infty} -\ln\frac{1}{N^22^d\pi^{d/2}\sigma^d}\sum_{i=1}^{N}\sum_{j=1}^{N}e^{\left(-\frac{1}{4\sigma^2}d_{ij}\right)} - \frac{d}{2}\ln\sigma^2 \\
@@ -292,24 +310,25 @@ plt.show()
 # &= \lim_{\sigma^2 \to +\infty} -1\left(\ln\frac{\sigma^d}{2^d\pi^{d/2}\sigma^d} + \ln\frac{1}{N^2}\sum_{i=1}^{N}\sum_{j=1}^{N}e^{\left(-\frac{1}{4\sigma^2}d_{ij}\right)}\right)\\
 # &= -\ln\frac{1}{2^d\pi^{d/2}} - \lim_{\sigma^2 \to +\infty} \ln\frac{1}{N^2}\sum_{i=1}^{N}\sum_{j=1}^{N}e^{\left(-\frac{1}{4\sigma^2}d_{ij}\right)} \\
 # &= \ln2^d\pi^{d/2} - \ln\frac{N^2}{N^2} \\
-# &= \ln(2\pi^{1/2})^d \\
-# \end{align}
+# &= \ln(2\pi^{1/2})^d
 # \tag{3.1.2}
+# \end{align}
 # $$
 # 
 # since the $\lim_{\sigma^2 \to +\infty} e^{\left(-\frac{1}{4\sigma^2}d_{ij}\right)} = 1$, $\sum_{i=1}^{N}\sum_{j=1}^{N}1 = N^2$, and $\ln(1)=0$.
 # 
 # Therefore we determine the equation of the linear asymptote of $H_2 =  H_2(ln\sigma^2)$ as $\ln\sigma^2 \to +\infty$ as
 # <a id='Eq3.1.3'></a>
+# 
 # $$
 # \begin{align}
 # H_2^+ & = \frac{d}{2}\ln\sigma^2 + \ln(2\pi^{\frac{1}{2}})^d \\
 # & = d\ln\sigma + d\ln2\pi^{\frac{1}{2}} \\
 # & = d\left(\ln\sigma + \ln2\pi^{\frac{1}{2}}\right) \\
 # & = d\ln\sigma2\pi^{\frac{1}{2}} \\
-# & = \ln\left(2\sigma\pi^{\frac{1}{2}}\right)^d \\
-# \end{align}
+# & = \ln\left(2\sigma\pi^{\frac{1}{2}}\right)^d
 # \tag{3.1.3}
+# \end{align}
 # $$
 
 # For b, the first simplification comes from factoring out -1 from the sum, the second simplification comes from the product rule of logarithms we multiply $\sigma^2$ and $\ln\frac{1}{N^22^d\pi^{d/2}\sigma^d}\sum_{i=1}^{N}\sum_{j=1}^{N}e^{\left(-\frac{1}{4\sigma^2}d_{ij}\right)}$. The third simplification come again from applying the product rule but this time in splitting into a sum of two different log terms (ie we treat $\frac{\sigma^d}{N^22^d\pi^{d/2}\sigma^d}\sum_{i=1}^{N}\sum_{j=1}^{N}e^{\left(-\frac{1}{4\sigma^2}d_{ij}\right)}$ as the product $\frac{\sigma^d}{2^d\pi^{d/2}\sigma^d} \times \frac{1}{N^2}\sum_{i=1}^{N}\sum_{j=1}^{N}e^{\left(-\frac{1}{4\sigma^2}d_{ij}\right)}$). The fourth simplification comes from applying the rule of cologarithms and the given above.
@@ -324,29 +343,31 @@ plt.show()
 # 
 # For $m'$ we begin the same way as for $m$, except using the simplified entropy equation [Eq. 2.1.1](#Eq2.1.1) an alternate form of [Eq. 1.3.1](#Eq1.3.1) which we derived in [Section 2.1](#Section2.1). We then apply the same simplifications applied in the derivation of [Eq. 3.1.1](#Eq3.1.1) and the fact that $\lim_{x \to 0^+}\ln(x) = -\infty$ and proceed, 
 # <a id='Eq3.2.1'></a>
+# 
 # $$
 # \begin{align}
 # m' & = \lim_{\sigma^2 \to 0^+} \frac{-\ln\frac{1}{N^2(2\pi^{1/2}\sigma)^d}\times\left[N + 2 \cdot\sum_{\substack{i<j \\ i,j = 1}}^{N}e^{\left(-\frac{1}{4\sigma^2}d_{ij}\right)}\right]}{\ln\sigma^2} \\
 # & = \frac{d}{2} + \lim_{\sigma^2 \to 0^+} \frac{\ln(N^22^d\pi^{d/2})}{\ln\sigma^2} - \frac{\left[N + 2 \cdot\sum_{\substack{i<j \\ i,j = 1}}^{N}e^{\left(-\frac{1}{4\sigma^2}d_{ij}\right)}\right]}{\ln\sigma^2} \\
 # & = \frac{d}{2} - \lim_{\sigma^2 \to 0^+} \frac{N}{\ln\sigma^2} \\
-# & = \frac{d}{2} \\
-# \end{align}
+# & = \frac{d}{2}
 # \tag{3.2.1}
+# \end{align}
 # $$
 # 
 # since $\frac{\ln(N^22^d\pi^{d/2})}{\ln\sigma^2}$ will tend toward $-0$ as $\sigma^2 \to 0^+$ and  $\lim_{\sigma^2 \to 0^+} \sum_{\substack{i<j \\ i,j = 1}}^{N}e^{\left(-\frac{1}{4\sigma^2}d_{ij}\right)} = 0$ since $\lim_{\sigma^2 \to 0^+} -\frac{1}{4\sigma^2}d_{ij} = -\infty$.
 # 
 # For $b'$ we follow the same procedure using [Eq. 2.1.1](#Eq2.1.1) and the simplifications applied for [Eq. 3.1.2](#Eq3.1.2):
 # <a id='Eq3.2.2'></a>
+# 
 # $$
 # \begin{align}
 # b' & = \lim_{\sigma^2 \to 0^+} -\ln\frac{1}{N^2\left(2\pi^{1/2}\sigma\right)^d}\times\left[N + 2 \cdot\sum_{\substack{i<j \\ i,j = 1}}^{N}e^{\left(-\frac{1}{4\sigma^2}d_{ij}\right)}\right] - \frac{d}{2}\ln\sigma^2 \\
 # & = -\ln\frac{1}{2^d\pi^{d/2}} - \lim_{\sigma^2 \to 0^+} \ln\frac{1}{N^2}\left[N + 2 \cdot\sum_{\substack{i<j \\ i,j = 1}}^{N}e^{\left(-\frac{1}{4\sigma^2}d_{ij}\right)}\right] \\
 # & = -\ln\frac{1}{2^d\pi^{d/2}} - \ln\frac{N}{N^2} \\
 # & = \ln\left(2\pi^{1/2}\right)^d + \ln\frac{N^2}{N} \\
-# & = d\ln2\pi^{1/2} + \ln N \\
-# \end{align}
+# & = d\ln2\pi^{1/2} + \ln N
 # \tag{3.2.2}
+# \end{align}
 # $$
 # 
 # Therefore we determine the equation of the linear asymptote of $H_2 =  H_2(ln\sigma^2)$ as $\ln\sigma^2 \to 0^+$ as
@@ -358,9 +379,9 @@ plt.show()
 # & = d\left(\ln\sigma + \ln2\pi^{1/2}\right) + \ln N \\
 # & = d\left(\ln\sigma2\pi^{1/2}\right) + \ln N \\
 # & = \ln\left(\sigma2\pi^{1/2}\right)^d + \ln N \\
-# & = \ln N\left(2\sigma\pi^{1/2}\right)^d \\
-# \end{align}
+# & = \ln N\left(2\sigma\pi^{1/2}\right)^d
 # \tag{3.2.3}
+# \end{align}
 # $$
 
 # For $b'$ the simplification at step 3 is due to the rule of cologs where a negative log equals the log of the reciprocol of the argument.
