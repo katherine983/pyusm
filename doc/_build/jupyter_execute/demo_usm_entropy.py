@@ -15,8 +15,9 @@
 #     - [Section 1.3](#Section1.3) Equation of *d*-dimensional Renyi Entropy of USM
 # * [Section 2](#Section2) Demo of usm_entropy module
 #     - [Section 2.1](#Section2.1) Simplification of Entropy Equation
-# * [Section 3](#Section3)
-#     - [Section 3.1](#Section3.1) 
+# * [Section 3](#Section3) Asymptotic Behavior of Renyi Entropy by Natural Log of Kernel Variance
+#     - [Section 3.1](#Section3.1) Asymptote for $\ln\sigma^2 \to +\infty$
+#     - [Section 3.2](#Section3.2) Asymptote for $\ln\sigma^2 \to 0^+$
 
 # In[1]:
 
@@ -270,7 +271,7 @@ plt.show()
 # In the original paper, Vinga and Almeida [3](#3) explore the dependence relationship between the entropy measure and the kernel variance, $\sigma^2$, with the graph of the function $H_2 = H_2(ln\sigma^2)$ and prove this graph has two linear asymptotes of the forms $H_2^+ = \lim_{ln\sigma^2 \to +\infty} H_2(ln\sigma^2) = m ln\sigma^2 + b$ and $H_2^- = \lim_{ln\sigma^2 \to -\infty} H_2(ln\sigma^2) = m' ln\sigma^2 + b'$. Below are proofs of the equations of these asymptotes for the d-dimensional USM. 
 
 # <a id='Section3.1'></a>
-# ### 3.1 Asymptote for $\ln\sigma^2 \to +\infty$
+# ## 3.1 Asymptote for $\ln\sigma^2 \to +\infty$
 # We solve for the coefficients, $m$ and $b$, of the asymptote for $ln\sigma^2 \to +\infty$ using the equations given by Vinga and Almeida [3](#3) $m = \lim_{\sigma^2 \to +\infty} \frac{H_2(\sigma^2)}{\ln\sigma^2}$ and $b = \lim_{\sigma^2 \to +\infty} (H_2(\sigma^2) - m \ln \sigma^2)$. 
 # 
 # We begin with $m$ and substitute [Eq. 1.3.1](#Eq1.3.1) for $H_2(\sigma^2)$ in the formula. We then simplify the equation by distributing the exponent *d* in the numerator, splitting the numerator into a sum of three log terms per the product rule, then distributing the negative term across the summation, and transforming the negative log of the fractions into the log of the reciprocals per the rule of cologarithms. 
@@ -336,12 +337,12 @@ plt.show()
 # This positive asymptote equation is computed by the function usm_entropy.positive_asymptote() which takes the dimension of the USM as its first positional argument and computes x and y values of the asymptote for the module default sig2 values.
 
 # <a id='Section3.2'></a>
-# ### 3.2 Asymptote for $\ln\sigma^2 \to 0^+$
+# ## 3.2 Asymptote for $\ln\sigma^2 \to 0^+$
 # Because $H_2 = H_2(ln\sigma^2)$ is a logarithmic equation it is undefined for $\sigma^2 < 0$. Therefore we do not have to worry about the $\lim_{\sigma^2 \to -\infty}$ of the equation but only need to solve for $\lim_{\sigma^2 \to 0^+}$.  
 # 
 # We solve for the coefficients, $m'$ and $b'$, of the asymptote equation $H_2^- = \lim_{ln\sigma^2 \to 0^+} H_2(ln\sigma^2) = m' ln\sigma^2 + b'$ using the equations given by Vinga and Almeida [3](#3) $m' = \lim_{\sigma^2 \to 0^+} \frac{H_2(\sigma^2)}{\ln\sigma^2}$ and $b' = \lim_{\sigma^2 \to 0^+} (H_2(\sigma^2) - m' \ln \sigma^2)$.  
 # 
-# For $m'$ we begin the same way as for $m$, except using the simplified entropy equation [Eq. 2.1.1](#Eq2.1.1) an alternate form of [Eq. 1.3.1](#Eq1.3.1) which we derived in [Section 2.1](#Section2.1). We then apply the same simplifications applied in the derivation of [Eq. 3.1.1](#Eq3.1.1) and the fact that $\lim_{x \to 0^+}\ln(x) = -\infty$ and proceed, 
+# For $m'$ we begin the same way as for $m$, except using the simplified entropy equation [Eq. 2.1.1](#Eq2.1.1) an alternate form of [Eq. 1.3.1](#Eq1.3.1) which we derived in [Section 2.1](#Section2.1). We then apply the same simplifications applied in the derivation of [Eq. 3.1.1](#Eq3.1.1) and the fact that $\lim_{x \to 0^+}\ln(x) = -\infty$ and proceed,  
 # <a id='Eq3.2.1'></a>
 # 
 # $$
@@ -370,8 +371,9 @@ plt.show()
 # \end{align}
 # $$
 # 
-# Therefore we determine the equation of the linear asymptote of $H_2 =  H_2(ln\sigma^2)$ as $\ln\sigma^2 \to 0^+$ as
+# Therefore we determine the equation of the linear asymptote of $H_2 =  H_2(ln\sigma^2)$ as $\ln\sigma^2 \to 0^+$ as  
 # <a id='Eq3.2.3'></a>
+# 
 # $$
 # \begin{align}
 # H_2^- & = \frac{d}{2}\ln\sigma^2 + d\ln2\pi^{1/2} + \ln N \\
