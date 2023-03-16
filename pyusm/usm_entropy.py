@@ -12,6 +12,7 @@ with Parzen Kernel Estimator as introduced in the paper by Vinga and Almeida [1]
 """
 
 import numpy as np
+import numexpr as ne
 from scipy.spatial.distance import pdist
 import matplotlib.pyplot as plt
 import datetime
@@ -129,7 +130,7 @@ def renyi2usm(cgr_coords, sig2v=SIG2V_DEFAULT, refseq=None, Plot=False, filesave
     r2usm_dict = {}
     for i in range(len(sig2v)):
         sig2 = sig2v[i]
-        G = 2 * np.sum(np.exp((-1/(4 * sig2)) * dij))+n
+        G = 2 * np.sum(ne.evaluate('exp((-1/(4 * sig2)) * dij)'))+n
         V = (1/((n ** 2) * ((2 * np.sqrt(sig2) * (np.sqrt(np.pi))) ** d))) * G
         r2usm = np.negative(np.log(V))
         r2usm_dict[sig2] = r2usm
