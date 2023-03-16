@@ -9,6 +9,8 @@ pyusm.egg-info/requires.txt
 # Byte-compiled / optimized / DLL files
 __pycache__/
 /__pycache__/
+pyusm/__pycache__/
+pyusm/tests/__pycache__/
 *.py[cod]
 *$py.class
 
