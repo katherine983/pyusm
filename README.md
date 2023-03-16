@@ -22,6 +22,9 @@ from pyusm import usm_entropy
 rn2dict = usm_entropy.renyi2usm(datausm.fw)
 ```
 
+## Testing
+The testing suite built with pytest. For now the expected performance is for one failure, 36 passed, 2 xfailed. The failure should be for string input in the test_usm_seq_iterables() test.
+
 #### Bibliography
 <a class="id">1</a>
 <div class="csl-entry">[1] Vinga, S., &#38; Almeida, J. S. (2004). Rényi continuous entropy of DNA sequences. <i>Journal of Theoretical Biology</i>, <i>231</i>(3), 377–388. https://doi.org/10.1016/j.jtbi.2004.06.030</div>
