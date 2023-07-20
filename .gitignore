@@ -174,3 +174,4 @@ pyusm.egg-info/PKG-INFO
 pyusm.egg-info/requires.txt
 pyusm.egg-info/PKG-INFO
 pyusm/__pycache__/usm.cpython-39.pyc
+doc/manuscript2_figures.ipynb
