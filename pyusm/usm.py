@@ -8,6 +8,12 @@ Created on Sun May 17 17:38:17 2020
 import numpy as np
 import copy
 #from .usmutils import ngon_coords
+if __package__ is None:
+    import sys, pathlib
+    sys.path.append(pathlib.Path(__file__).parent)
+    from usmutils import ngon_coords, CGR
+else:
+    from .usmutils import ngon_coords, CGR
 
 def check_alphabet(uu, A):
     # This function takes a user-defined list of the symbols in the alphabet, A, and compares with the set of unique symbols found in seq, uu
@@ -77,7 +83,7 @@ def coord_dict_make(alphabet, vertices):
     coord_dict=dict(zip(alphabet, vertices))
     return coord_dict
 
-class USM:
+class USM(CGR):
     """
     Creates a container for CGR coordinates with attributes related to the alphabet of the sequence,
     coordinates of alphabet, specifying forward or backward generated coordinates and form of CGR (either USM or 2D, default is USM).
@@ -296,12 +302,7 @@ def usm_density(c, L):
     n=np.histogram(J, bins=nbin)
     return n
 
-if __package__ is None:
-    import sys, pathlib
-    sys.path.append(pathlib.Path(__file__).parent)
-    from usmutils import ngon_coords
-else:
-    from .usmutils import ngon_coords
+
 if __name__ == '__main__':
         cwd = pathlib.Path.cwd()
         demo_dir = cwd / "tests/"
