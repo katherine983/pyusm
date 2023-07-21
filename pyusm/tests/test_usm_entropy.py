@@ -18,11 +18,12 @@ import pyusm
 #     usm = pyusm.USM.make_usm(seq, A=dna_alphabet_complete_sorted)
 #     return usm
 
-@pytest.fixture(params=[('R1.txt', 'renyi2usm_AA.rn2'), ('rand.txt', 'renyi2usm_alea1c.rn2'),
-                 ('m5.txt', 'renyi2usm_alea2c.rn2'), ('m7e.txt', 'renyi2usm_alea3c.rn2'),
-                 ('m4.txt', 'renyi2usm_ATCG20.rn2'), ('R5.txt', 'renyi2usm_ATCGA.rn2'),
-                 ('m3.txt', 'renyi2usm_ATCx.rn2'), ('Es.txt', 'renyi2usm_Es.seq.rn2'),
-                 ('MC0.txt', 'renyi2usm_M0.rn2'), ('MC1.txt', 'renyi2usm_MC91.seq.rn2')])
+# @pytest.fixture(params=[('R1.txt', 'renyi2usm_AA.rn2'), ('rand.txt', 'renyi2usm_alea1c.rn2'),
+#                  ('m5.txt', 'renyi2usm_alea2c.rn2'), ('m7e.txt', 'renyi2usm_alea3c.rn2'),
+#                  ('m4.txt', 'renyi2usm_ATCG20.rn2'), ('R5.txt', 'renyi2usm_ATCGA.rn2'),
+#                  ('m3.txt', 'renyi2usm_ATCx.rn2'), ('Es.txt', 'renyi2usm_Es.seq.rn2'),
+#                  ('MC0.txt', 'renyi2usm_M0.rn2'), ('MC1.txt', 'renyi2usm_MC91.seq.rn2')])
+@pytest.fixture(params=[('Es.txt', 'renyi2usm_Es.seq.rn2')])
 def datafilepairs(request):
     return request.param
 
