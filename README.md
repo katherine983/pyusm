@@ -1,6 +1,6 @@
 [![DOI](https://zenodo.org/badge/670381931.svg)](https://zenodo.org/badge/latestdoi/670381931)
 # pyusm
-
+  
 Python package implementing and expanding on the universal sequence mapping [tools](<https://github.com/usm/usm.github.com>) created by S. Vinga and J. Almeida and referenced in [1](#1) [2](#2) [3](#3). 
 
 For further documentation of the package functions including theoretical background and proofs, visit <https://katherine983.github.io/pyusm/intro.html>
