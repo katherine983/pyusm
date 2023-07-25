@@ -23,6 +23,21 @@ from pyusm import usm_entropy
 #renyi entropy estimates output as a dictionary with kernel variance values as keys
 rn2dict = usm_entropy.renyi2usm(datausm.fw)
 ```
+```python
+#generate a 2D cgr plot and animation
+import pyusm
+
+#produces an instance of the USM class with form '2DCGR'
+datacgr = pyusm.USM.cgr2d(data)
+
+#initiate figure
+cgrfig = pyusm.cgr_plot(datacgr.fw, datacgr.coord_dict)
+cgrfig.plot()
+#animate plot figure
+cgrfig.animate()
+#save figure (alias for matplotlib .savefig() method)
+cgrfig.savefig('cgrfig.txt', **kwargs)
+```
 
 ## Testing
 The testing suite built with pytest. For now the expected performance is for one failure, 26 passed, 2 xfailed. The failure should be for string input in the test_usm_seq_iterables() test. Test data include the sequence of Es promotor regions in B subtilis used in the original study [1](#1) which can also be found [here](<https://github.com/usm/usm.github.com/blob/master/entropy/Es.seq.txt>). Source for HUMHBB sequence data can be found [here](<https://www.ncbi.nlm.nih.gov/nuccore/U01317.1>).
