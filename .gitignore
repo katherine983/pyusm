@@ -11,6 +11,8 @@ __pycache__/
 /__pycache__/
 pyusm/__pycache__/
 pyusm/tests/__pycache__/
+pyusm/__pycache__/*
+pyusm/tests/__pycache__/*
 *.py[cod]
 *$py.class
 *.pyc
