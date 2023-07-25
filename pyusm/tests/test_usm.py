@@ -171,17 +171,18 @@ def test_cgr2d_GGA_suffix_dist(example_dna_seq_short, dna_cgr_coord_dict):
     dist = np.linalg.norm(np.array(cgr_a.fw[-1]) - np.array(cgr_b.fw[-1]))
     assert dist < q
 
+# test on original data for which I don't yet have permission to publish
 
-def test_usm_mc0(test_data_dir, expected_out_dir, dna_usm_coord_dict):
-    seqfile = os.path.join(test_data_dir, 'MC0.txt')
-    with open(seqfile, 'r') as fhand:
-        seq = list(fhand.read())
-    mc0 = pyusm.USM.make_usm(seq, A=dna_usm_coord_dict)
-    #get original coords generated from matlab code
-    coordfile = os.path.join(expected_out_dir, 'og_MC0_coords.csv')
-    og_mc0 = np.genfromtxt(coordfile, delimiter=',')
-    assert np.allclose(np.array(mc0.fw, dtype=np.float64), og_mc0)
-    #assert np.array_equal(np.array(mc0.fw), og_mc0)
+# def test_usm_mc0(test_data_dir, expected_out_dir, dna_usm_coord_dict):
+#     seqfile = os.path.join(test_data_dir, 'MC0.txt')
+#     with open(seqfile, 'r') as fhand:
+#         seq = list(fhand.read())
+#     mc0 = pyusm.USM.make_usm(seq, A=dna_usm_coord_dict)
+#     #get original coords generated from matlab code
+#     coordfile = os.path.join(expected_out_dir, 'og_MC0_coords.csv')
+#     og_mc0 = np.genfromtxt(coordfile, delimiter=',')
+#     assert np.allclose(np.array(mc0.fw, dtype=np.float64), og_mc0)
+#     #assert np.array_equal(np.array(mc0.fw), og_mc0)
 
 
 
