@@ -1,3 +1,4 @@
+[![DOI](https://zenodo.org/badge/670381931.svg)](https://zenodo.org/badge/latestdoi/670381931)
 # pyusm
 
 Python package implementing and expanding on the universal sequence mapping [tools](<https://github.com/usm/usm.github.com>) created by S. Vinga and J. Almeida and referenced in [1](#1) [2](#2) [3](#3). 
@@ -22,6 +23,21 @@ from pyusm import usm_entropy
 #computes the quadratic renyi entropy values from the forward USM map coordinates in datausm.fw
 #renyi entropy estimates output as a dictionary with kernel variance values as keys
 rn2dict = usm_entropy.renyi2usm(datausm.fw)
+```
+```python
+#generate a 2D cgr plot and animation
+import pyusm
+
+#produces an instance of the USM class with form '2DCGR'
+datacgr = pyusm.USM.cgr2d(data)
+
+#initiate figure
+cgrfig = pyusm.cgr_plot(datacgr.fw, datacgr.coord_dict)
+cgrfig.plot()
+#animate plot figure
+cgrfig.animate()
+#save figure (alias for matplotlib .savefig() method)
+cgrfig.savefig('cgrfig.txt', **kwargs)
 ```
 
 ## Testing
